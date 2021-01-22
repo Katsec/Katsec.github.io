@@ -220,7 +220,12 @@
 <h4 id="漏洞利用">漏洞利用</h4>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet IP <span class="number">11211</span> / nc -vv IP <span class="number">11211</span></span><br></pre></td></tr></table></figure>
 <p>提示连接成功则表示存在漏洞。</p>
-<p>使用<figure class="highlight plain"><figcaption><span>items```即可查看存在的缓存项目</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gmwcn24ztcj30sk162jxx.jpg&quot; alt=&quot;image-20210122112531860&quot; style=&quot;zoom:50%;&quot; /&gt;</span><br><span class="line"></span><br><span class="line">使用```stats cachedump 25 0```即可获取缓存</span><br><span class="line"></span><br><span class="line">&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEgy1gmwcn5takxj310205ugm7.jpg&quot; alt=&quot;image-20210122112828460&quot; style=&quot;zoom: 50%;&quot; /&gt;</span><br><span class="line"></span><br><span class="line">查看缓存内容```get M_CAREER_QUESTIONNAIRE_3df4155d-538a-4a62-b59c-cea60ec9002a</span><br></pre></td></tr></table></figure></p>
+<p>使用stats items即可查看存在的缓存项目</p>
+<img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmwcn24ztcj30sk162jxx.jpg" alt="image-20210122112531860" style="zoom:50%;">
+<p>使用stats cachedump 25 0即可获取缓存</p>
+<img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmwcn5takxj310205ugm7.jpg" alt="image-20210122112828460" style="zoom: 50%;">
+<p>查看缓存内容<br>
+get M_CAREER_QUESTIONNAIRE_3df4155d-538a-4a62-b59c-cea60ec9002a</p>
 <img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmwcn8pl9jj30u010b49s.jpg" alt="image-20210122112909256" style="zoom:50%;">
 <h4 id="漏洞修复">漏洞修复</h4>
 <p>1、设置 memchached 只允许本地访问</p>
