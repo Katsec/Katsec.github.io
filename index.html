@@ -137,7 +137,7 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -151,7 +151,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -211,6 +211,40 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2021/01d3969c30.html">
+        <h2 class="post-title">
+                                 
+            Memcahe未授权访问
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Memcache 未授权访问
+Memcached 是一套常用的 key-value 缓存系统，由于它本身没有权限控制模块，所以对公网开放的 Memcache 服务很容易被攻击者扫描发现，攻击者通过命令交互可直接读取 Memcached 中的敏感信息。
+漏洞利用
+1telnet IP 11211 / nc -vv IP 11211
+提示连接成功则表示存在漏洞。
+使用items```即可查看存在......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Kat on
+            2021-01-22
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#漏洞利用" title="漏洞利用">漏洞利用</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -397,11 +431,15 @@ pywin32-221.wi......
     <div class="tags">
         
             
-            <a href="/tags/#渗透测试" title="渗透测试" rel="2">渗透测试</a>
+            <a href="/tags/#漏洞利用" title="漏洞利用" rel="1">漏洞利用</a>
             
         
             
             <a href="/tags/#Redteam" title="Redteam" rel="1">Redteam</a>
+            
+        
+            
+            <a href="/tags/#渗透测试" title="渗透测试" rel="2">渗透测试</a>
             
         
             
@@ -461,6 +499,10 @@ pywin32-221.wi......
     <ul>
       
         <li>
+          <a href="/2021/01d3969c30.html">Memcahe未授权访问</a>
+        </li>
+      
+        <li>
           <a href="/2020/124c3c0aca.html">记一次Citrix Xen APP越权访问利用</a>
         </li>
       
@@ -488,7 +530,7 @@ pywin32-221.wi......
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">November 2020</a><span class="archive-list-count">2</span></li></ul>
     </div>
 
         <hr>
@@ -530,7 +572,7 @@ pywin32-221.wi......
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2020 
+                    Copyright &copy; Kat 2021 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>
