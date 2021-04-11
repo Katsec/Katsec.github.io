@@ -236,7 +236,7 @@
 <p>原理：通过ADSI(ActiveDirectoryServicesInterface)（活动目录服务接口）尝试进行LDAP查询，获得结果</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-DomainPasswordSpray -UserList .\users.txt -Password DomainUser123! -Verbose</span><br></pre></td></tr></table></figure>
 <p>输出结果如下图</p>
-<p><img src="LDAP%E5%8D%8F%E8%AE%AE.assets/image-20210410172532275.png" alt="image-20210410172532275"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7yyzn8dj30zy06s3zb.jpg" alt="image-20210410172532275"></p>
 <p>DomainPasswordSpray支持筛选用户的功能，获得所有用户的列表，排除被禁用和被锁定的用户</p>
 <p>命令如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Get-DomainUserList -RemoveDisabled -RemovePotentialLockouts</span><br></pre></td></tr></table></figure>
