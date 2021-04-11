@@ -227,9 +227,9 @@
 <h2 id="2-ntml认证方式工作组环境">2. NTML认证方式（工作组环境）</h2>
 <p>在非域环境下，一般都是使用 NTLM 进行认证。SMB 服务和很多 Web 程序都是使用 NTLM 来实现对用户的身份认证。</p>
 <p>NTML工作组环境认证流程：</p>
-<p><img src="Windows%E6%9C%AC%E5%9C%B0%E8%AE%A4%E8%AF%81%E5%92%8CNTML%E8%AE%A4%E8%AF%81/image-20210411220516233.png" alt="image-20210411220516233"></p>
-<p><img src="Windows%E6%9C%AC%E5%9C%B0%E8%AE%A4%E8%AF%81%E5%92%8CNTML%E8%AE%A4%E8%AF%81/image-20210411223928119.png" alt="image-20210411223928119"></p>
-<p><img src="Windows%E6%9C%AC%E5%9C%B0%E8%AE%A4%E8%AF%81%E5%92%8CNTML%E8%AE%A4%E8%AF%81/image-20210411223832988.png" alt="image-20210411223832988"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7sb3scoj31mk0ggamj.jpg" alt="image-20210411220516233"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7sgn9naj317a0fan4b.jpg" alt="image-20210411223928119"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7skchnjj31n60imdr6.jpg" alt="image-20210411223832988"></p>
 <p>由于客户端在连接文件服务器时，默认会将当前登录用户的密码Hash发送至服务器进行验证，在这个过程中就给攻击者提供了破解NTML hash的机会。</p>
 <p>如果获得了内网一个文件服务器的权限，那么内网中的其他主机在使用界面尝试访问该服务器时，首先会将本机的密码Hash发送至服务器进行验证，在服务器端抓取数据包能够获得NTLM Response，对NTLM Response的格式进行解析，提取特定信息，使用Hashcat尝试字典破解或者暴力破解，就有可能还原出用户本机的明文口令。</p>
 <p>也就是说我们如果可以抓取数据包，也就有可能获取其他用户的账号密码。</p>
@@ -237,7 +237,7 @@
 <h2 id="3-ntml认证方式域环境中">3. NTML认证方式（域环境中）</h2>
 <p>在域环境中优先使用Kerberos认证方式，当Kerberos认证不可用的时候才会使用NTML认证方式。</p>
 <p>NTML域环境中的认证流程：</p>
-<p><img src="Windows%E6%9C%AC%E5%9C%B0%E8%AE%A4%E8%AF%81%E5%92%8CNTML%E8%AE%A4%E8%AF%81/image-20210411221042111.png" alt="image-20210411221042111"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7sq388vj31ma0s8awc.jpg" alt="image-20210411221042111"></p>
 
                 
 
