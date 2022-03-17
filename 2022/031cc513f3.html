@@ -225,13 +225,13 @@
 如果可执行文件经过了“加壳”处理，PE的节信息就会变得非常“古怪”。在Crack和反病毒分析中需要经常处理这类古怪的PE文件。</p>
 <h1 id="2-pe文件格式详解">2. PE文件格式详解</h1>
 <p>PE文件大致的格式如图：</p>
-<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225431007.png" alt="image-20220317225431007"></p>
+<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225431007.png" alt="image-20220317225431007"></p>
 <h3 id="21-dos头">2.1 DOS头</h3>
 <p>DOS头是PE文件的第一个头，用来保持对DOS系统的兼容，并且用于定位真正的PE头（即IMAGE_NT_HEADERS）。<br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225459252.png" alt="image-20220317225459252"><br>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225459252.png" alt="image-20220317225459252"><br>
 <strong>winnt.h头文件</strong>：该文件定义了PE文件的结构体，该文件可从VC开发环境中获取。<br>
 DOS头在winnt.h文件中的定义如下（该头文件的大小用十六进制表示为40H，64个字节）：<br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225515536.png" alt="image-20220317225515536"><br>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225515536.png" alt="image-20220317225515536"><br>
 在wint.h文件中针对DOS头部的定义非常多，对于我们而言只需要理解两个属性（因为DOS系统已经不再使用)<br>
 **e_magic 	**<br>
 <strong>可执行文件的PE标识对应ASCALL就是MZ，对应十六进制为4D5A；但是开头为MZ的并不代表就是一个可执行文件。</strong></p>
@@ -240,11 +240,11 @@ DOS头在winnt.h文件中的定义如下（该头文件的大小用十六进制�
 <p>下面通过对比winnt.h头文件，在十六进制编辑器中逐字节的理解PE结构中的重要字段。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WORD、DWORD、LONG都是windows下的数据类型；WORD代表2个字节，DWORD、LONG均代表4个字节。    </span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_DOS_HEADER</span> &#123;</span></span><br><span class="line">      WORD e_magic;		<span class="comment">//0000h</span></span><br><span class="line">      WORD e_cblp;</span><br><span class="line">      WORD e_cp;</span><br><span class="line">      WORD e_crlc;</span><br><span class="line">      WORD e_cparhdr;</span><br><span class="line">      WORD e_minalloc;</span><br><span class="line">      WORD e_maxalloc;</span><br><span class="line">      WORD e_ss;</span><br><span class="line">      WORD e_sp;</span><br><span class="line">      WORD e_csum;</span><br><span class="line">      WORD e_ip;</span><br><span class="line">      WORD e_cs;</span><br><span class="line">      WORD e_lfarlc;</span><br><span class="line">      WORD e_ovno;</span><br><span class="line">      WORD e_res[<span class="number">4</span>];</span><br><span class="line">      WORD e_oemid;</span><br><span class="line">      WORD e_oeminfo;</span><br><span class="line">      WORD e_res2[<span class="number">10</span>];</span><br><span class="line">      LONG e_lfanew;	<span class="comment">//003Ch</span></span><br><span class="line">    &#125; IMAGE_DOS_HEADER,*PIMAGE_DOS_HEADER;</span><br></pre></td></tr></table></figure>
 <p><strong>DOS头对应十六进制如下：</strong><br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225535035.png" alt="image-20220317225535035"><br>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225535035.png" alt="image-20220317225535035"><br>
 <strong>e_lfanew字段对应80 00 00 00，也就是说这个80 00 00 00指向了真正的偏移，也就是偏移位置在00 00 00 80位置处。</strong><br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225544220.png" alt="image-20220317225544220"><br>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225544220.png" alt="image-20220317225544220"><br>
 从这个位置开始就是真正PE头的开始<br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225556610.png" alt="image-20220317225556610"></p>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225556610.png" alt="image-20220317225556610"></p>
 <h5 id="如何判断一个文件是否为可执行文件">如何判断一个文件是否为可执行文件？</h5>
 <p>1、首先查看PE开头是否为MZ，十六进制中4D5A<br>
 2、寻找真正的PE头的偏移地址<br>
@@ -256,7 +256,7 @@ DOS头在winnt.h文件中的定义如下（该头文件的大小用十六进制�
 小尾方式：高位地址存放数据的高位，低位地址存放数据的低位；<br>
 大尾方式：高位地址存放数据的低位，低位地址存放数据的高位；</p>
 <p>下图是0x11 22 33 44这一个整数的低位优先和高位优先的存储实例：</p>
-<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225814169.png" alt="image-20220317225814169"></p>
+<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225814169.png" alt="image-20220317225814169"></p>
 <p>现在使用的Inter的CPU都是使用的小尾方式进行字节排序，网络上传输数据一般使用的都是大尾方式进行排序。</p>
 <h3 id="22-image_nt_header">2.2 IMAGE_NT_HEADER</h3>
 <p>winnt.h文件中关于IMAGE_NT_HEADER的定义有两种，在编译的时候编译器会自动的去选择匹配；</p>
@@ -270,7 +270,7 @@ DOS头在winnt.h文件中的定义如下（该头文件的大小用十六进制�
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_I386 0x014c    <span class="comment">// Intel 386.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_ARM 0x01c0     <span class="comment">// ARM</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_POWERPC 0x01F0 <span class="comment">// IBM PowerPC</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_IA64 0x0200    <span class="comment">// Intel 64</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_MACHINE_AMD64 0x8664   <span class="comment">// AMD64 (K8)</span></span></span><br></pre></td></tr></table></figure>
 <p><strong>TimeDateStamp</strong><br>
 时间戳为4个字节，这个时间戳是在编译的时候生成obj文件使用的与文件修改、创建等时间无关。<br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225842498.png" alt="image-20220317225842498"></p>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225842498.png" alt="image-20220317225842498"></p>
 <p><strong>Characteristics常用属性</strong></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_RELOCS_STRIPPED 		<span class="comment">//0x0001，表示没有重定位</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_EXECUTABLE_IMAGE 	<span class="comment">//0x0002，表示可执行</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_LINE_NUMS_STRIPPED 	<span class="comment">//0x0004，COFF line numbers were stripped from the file.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_LOCAL_SYMS_STRIPPED 	<span class="comment">//0x0008，COFF symbol table entries were stripped from file.</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_32BIT_MACHINE 		<span class="comment">//0x0100，计算机支持32位</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_SYSTEM 		<span class="comment">//0x1000，表示是系统文件</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMAGE_FILE_DLL 		<span class="comment">//0x2000，表示是DLL文件</span></span></span><br></pre></td></tr></table></figure>
 <h4 id="223-image_optional_header32-optionalheader可选头">2.2.3 IMAGE_OPTIONAL_HEADER32 OptionalHeader（可选头）</h4>
@@ -291,7 +291,7 @@ DOS头在winnt.h文件中的定义如下（该头文件的大小用十六进制�
 这里借用进程的虚拟内存来演示装载地址，Windows内存管理器给每个进程分配了4G的虚拟内存；其中高2G是内核使用，低2G为应用程序使用。<br>
 4G的地址空间从0x00000000～0xffffffff，应用程序使用的则在0x00000000～0x7fffffff范围内；则看到地址为0x8开头的都为内核使用的地址。</p>
 <p>在4G的虚拟地址空间中更低的内存空间会被应用程序其他资源占用，所以装载地址ImageBase在图中所示位置，那么程序入口AddressOfEntryPoint在稍稍向上一点的内存空间中。</p>
-<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225858424.png" alt="image-20220317225858424"></p>
+<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225858424.png" alt="image-20220317225858424"></p>
 <p><strong>SectionAlignment、FileAlignment</strong><br>
 内存中的节的对齐值和文件中的节的对齐值，借用这两概念理解一下什么是对齐。</p>
 <p><strong>对齐：</strong><br>
@@ -301,9 +301,9 @@ A教室刚好放下50人，B教室只有2个人，但是2个人也要占用一�
 64为系统的对齐值默认是8K，0x2000，十进制8192；<br>
 这里4K，8K其实是内存分页的大小，这里关于内存分页不过多介绍。</p>
 <p><strong>SubSystem取值含义</strong><br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225911945.png" alt="image-20220317225911945"><br>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225911945.png" alt="image-20220317225911945"><br>
 可选头16进制打开范围<br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225921249.png" alt="image-20220317225921249"></p>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225921249.png" alt="image-20220317225921249"></p>
 <h1 id="3-节表">3. 节表</h1>
 <p>在介绍节表前我们需要理解PE文件与虚拟内存映射之间的关系。</p>
 <h3 id="31-pe文件与虚拟内存映射">3.1 PE文件与虚拟内存映射</h3>
@@ -315,28 +315,28 @@ PE文件中的指令被装入内存后的地址。</p>
 <p>相对虚拟地址（RVA，Relative Virtual Address）：<br>
 相对虚拟地址是内存地址相对于映射基址的偏移量。VA=Image Base+RVA</p>
 <p>如下图，.text节的起始RVA为1000<br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225934292.png" alt="image-20220317225934292"></p>
-<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317225943817.png" alt="image-20220317225943817"></p>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225934292.png" alt="image-20220317225934292"></p>
+<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317225943817.png" alt="image-20220317225943817"></p>
 <h3 id="32-节表域">3.2 节表域</h3>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//28H，40个字节</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_SECTION_HEADER</span> &#123;</span></span><br><span class="line">    BYTE    Name[IMAGE_SIZEOF_SHORT_NAME]; 	<span class="comment">//数组，8个长度。表示节名称</span></span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">            DWORD   PhysicalAddress;</span><br><span class="line">            DWORD   VirtualSize;		<span class="comment">//节区的长度，这个长度是没有对齐过的值</span></span><br><span class="line">    &#125; Misc;</span><br><span class="line">    DWORD   VirtualAddress;			<span class="comment">//用在内存中指明该节的起始地址</span></span><br><span class="line">    DWORD   SizeOfRawData;			<span class="comment">//在文件中对齐后的尺寸</span></span><br><span class="line">    DWORD   PointerToRawData		<span class="comment">//用在文件中指明该节的起始地址</span></span><br><span class="line">    DWORD   PointerToRelocations;</span><br><span class="line">    DWORD   PointerToLinenumbers;</span><br><span class="line">    WORD    NumberOfRelocations;	<span class="comment">//</span></span><br><span class="line">    WORD    NumberOfLinenumbers;	<span class="comment">//</span></span><br><span class="line">    DWORD   Characteristics;	<span class="comment">//节属性</span></span><br><span class="line">&#125; IMAGE_SECTION_HEADER, *PIMAGE_SECTION_HEADER;</span><br></pre></td></tr></table></figure>
 <p><strong>IMAGE_SIZEOF_SHORT_NAME</strong><br>
 该数组表示节的名称，对应name字段。节的名称是可有可无的，有些软件保护会将节的名称全部擦除或者改名生成随机的节名称。</p>
-<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317230006646.png" alt="image-20220317230006646"></p>
+<p><img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317230006646.png" alt="image-20220317230006646"></p>
 <p><strong>SizeOfRawData</strong><br>
 <strong>该节在文件中对齐后的尺寸，对应Section Table中的RSize字段</strong><br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317230019475.png" alt="image-20220317230019475"></p>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317230019475.png" alt="image-20220317230019475"></p>
 <h1 id="4-导入表分析">4. 导入表分析</h1>
 <p>可执行文件加载动态链接库的时候就是通过导入表加载进来的；<br>
 一般的壳都会对导入表进行加密，在病毒分析、软件破解都需要一定入口点进行定位；这个入口点往往就是API函数、字符串。<br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317230034062.png" alt="image-20220317230034062"><br>
-<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3.assets/image-20220317230043659.png" alt="image-20220317230043659"></p>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317230034062.png" alt="image-20220317230034062"><br>
+<img src="PE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E8%AF%A6%E8%A7%A3/image-20220317230043659.png" alt="image-20220317230043659"></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_IMPORT_DESCRIPTOR</span> &#123;</span></span><br><span class="line">      __C89_NAMELESS <span class="keyword">union</span> &#123;</span><br><span class="line">	DWORD Characteristics;</span><br><span class="line">	DWORD OriginalFirstThunk; </span><br><span class="line">      &#125; DUMMYUNIONNAME;</span><br><span class="line">      DWORD TimeDateStamp;</span><br><span class="line"></span><br><span class="line">      DWORD ForwarderChain;</span><br><span class="line">      DWORD Name；</span><br><span class="line">      DWORD FirstThunk;</span><br><span class="line">    &#125; IMAGE_IMPORT_DESCRIPTOR;</span><br><span class="line">    <span class="keyword">typedef</span> IMAGE_IMPORT_DESCRIPTOR UNALIGNED *PIMAGE_IMPORT_DESCRIPTOR;</span><br></pre></td></tr></table></figure>
 <p><strong>导入表在内存中的情况</strong>：<br>
-OriginalFirstThunk;<br>
+OriginalFirstThunk：<br>
 RVA，指向的是一个INT表。ImportNameTable，表中保存所有导入函数的TVA</p>
-<p>Name；<br>
+<p>Name：<br>
 保存的是一个RVA，这个RVA指向的内容是DLL文件名</p>
-<p>FirstThunk;<br>
+<p>FirstThunk：<br>
 RVA，指向一个IAT表，ImportAddressTable，表中保存所有导入函数的地址（VA地址）</p>
 <h3 id="41-导入表隐藏">4.1 导入表隐藏</h3>
 <p>动态链接库的导入使用是的导入表来进行调用链接，那用户可以自己编写代码来加载DLL文件。<br>
