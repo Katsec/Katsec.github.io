@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          DLL劫持之白加黑 - Kat | Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://spanning-tree.xyz/2022/03aafd0b41.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#免杀" title="免杀">免杀</a>
+                            
+                        </div>
+                        <h1>DLL劫持之白加黑</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Kat on
+                            2022-03-18
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kat</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="dll劫持之白加黑">DLL劫持之白加黑</h1>
+<h2 id="0x01-什么是dll文件">0x01 什么是DLL文件？</h2>
+<p>DLL文件全称为动态链接库，是windows上必不可少的模块，是实现代码重用的具体形式；</p>
+<h2 id="0x02-什么是dll劫持">0x02 什么是DLL劫持？</h2>
+<p>如果在进程尝试加载一个DLL时没有并没有指定DLL的绝对路径，那么Windows会尝试去按照顺序搜索这些特定目录来查找这个DLL,如果攻击者能够将恶意的DLL放在优先于正常DLL所在的目录，那么就能够欺骗系统去加载恶意的DLL，形成”劫持”。</p>
+<p>Windows中负责加载DLL的系统API函数为LoadLibrary，调用该函数可以使用 DLL 的相对路径。</p>
+<h3 id="21-dll文件的加载顺序">2.1 DLL文件的加载顺序</h3>
+<p>官方文档：<a href="https://docs.microsoft.com/zh-cn/windows/win32/dlls/dynamic-link-library-search-order" target="_blank" rel="noopener">https://docs.microsoft.com/zh-cn/windows/win32/dlls/dynamic-link-library-search-order</a></p>
+<p><strong>在Windows XP SP2 之前(不包括), 默认未启用DLL搜索模式。</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 从其中加载应用程序的目录。</span><br><span class="line"><span class="number">2.</span> 当前目录。</span><br><span class="line"><span class="number">3.</span> 系统目录。 使用GetSystemDirectory函数获取此目录的路径。</span><br><span class="line"><span class="number">4.</span> <span class="number">16</span> 位系统目录。 没有函数可获取此目录的路径，但会进行搜索。</span><br><span class="line"><span class="number">5.</span> Windows 目录。 使用GetWindowsDirectory函数获取此目录的路径。</span><br><span class="line"><span class="number">6.</span> PATH 环境变量中列出的目录。</span><br></pre></td></tr></table></figure>
+<p>这样的加载顺序很容易导致一个系统dll被劫持，因为只要攻击者将目标文件和恶意dll放在一起即可,导致恶意dll先于系统dll加载，而系统dll是非常常见的，所以当时基于这样的加载顺序，出现了大量受影响软件。</p>
+<p><strong>Windows XP Service Pack 2（SP2）开始启用安全DLL搜索模式。</strong></p>
+<p>后来为了减轻这个影响,默认情况下在Windows XP Service Pack2开启了安全DLL搜索模式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 从其中加载应用程序的目录。</span><br><span class="line"><span class="number">2.</span> 系统目录。 使用GetSystemDirectory函数获取此目录的路径。</span><br><span class="line"><span class="number">3.</span> <span class="number">16</span> 位系统目录。没有函数可获取此目录的路径，但会进行搜索。</span><br><span class="line"><span class="number">4.</span> Windows 目录。使用GetWindowsDirectory函数获取此目录的路径。</span><br><span class="line"><span class="number">5.</span> 当前目录。</span><br><span class="line"><span class="number">6.</span> PATH 环境变量中列出的目录。</span><br></pre></td></tr></table></figure>
+<p>可以看到当前的加载目录被放入到加载目录的第五位。</p>
+<p>不过从上面分析可以知道,系统dll应该是经常调用的,如果我们对程序安装的目录拥有替换权限，比如装在了非系统盘，那么我们同样可以利用加载顺序的(1)来劫持系统的DLL。</p>
+<p>关于安全DLL的搜索模式禁用可参考Windows官方文档。</p>
+<p>疑问：Application’s directory与Current directory的区别？</p>
+<p><strong>Windows 7后增加KnownDlls功能</strong></p>
+<p>百度词条关于KnownDlls的描述</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">KnownDlls是windows下的一种用来缓存经常用到的DLL文件的机制。更准确地说，是被用来加快应用程序对DLL文件的加载速度的机制；也可以被当做是一种安全机制，因为它能够阻止恶意软件植入木马DLL。</span><br></pre></td></tr></table></figure>
+<p>实际上微软为了更进一步的防御系统的DLL被劫持，将一些容易被劫持的系统DLL写进了一个注册表项中，那么凡是此项下的DLL文件就会被禁止从EXE自身所在的目录下调用，而只能从系统目录即SYSTEM32目录下调用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs</span><br></pre></td></tr></table></figure>
+<p>键值如下：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184nufgzbj20th0oednc.jpg" alt="image-20220318223827685"></p>
+<p>直到Windows 7后DLL的加载顺序如图：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184nurpa6j20co081t9m.jpg" alt="image-20220318224012988"></p>
+<p>但是如果开发者滥用DLL目录，所调用的DLL文件不在KnownDLLs目录中且攻击者可控Application’s directory与PATH环境中列出的目录依然能够导致DLL劫持的问题。</p>
+<h2 id="0x03-什么是使用白加黑的方式进行dll劫持">0x03 什么是使用白加黑的方式进行DLL劫持？</h2>
+<p>白针对杀软而言是指带有数字签名的正常exe文件，那么黑就是指带有恶意代码的DLL文件。</p>
+<p>病毒借助那些带数字签名且在杀毒软件白名单内的exe程序去加载带有恶意代码的dll，便能获得杀毒软件主动防御的自动信任，从而成功加载到系统中。</p>
+<h2 id="0x04-编写dll文件">0x04 编写DLL文件</h2>
+<p>使用VS2019创建项目</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184nwp4uoj219m0u0tbt.jpg" alt="image-20220320002219908"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184o0wswaj219s0u00v0.jpg" alt="image-20220320002318737"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// pch.cpp: 与预编译标头对应的源文件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pch.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 当使用预编译的头时，需要使用此源文件，编译才能成功。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dllmain.cpp : 定义 DLL 应用程序的入口点。</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pch.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">BOOL APIENTRY <span class="title">DllMain</span><span class="params">( HMODULE hModule,</span></span></span><br><span class="line"><span class="function"><span class="params">                       DWORD  ul_reason_for_call,</span></span></span><br><span class="line"><span class="function"><span class="params">                       LPVOID lpReserved</span></span></span><br><span class="line"><span class="function"><span class="params">                     )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (ul_reason_for_call)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_ATTACH:</span><br><span class="line">        WinExec(<span class="string">"calc.exe"</span>, SW_HIDE);</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_ATTACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_DETACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_DETACH:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>生成dll文件</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184odt67lj21is0u044j.jpg" alt="image-20220320003311812"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184of2obsj215r0u0ack.jpg" alt="image-20220320000815375"></p>
+<h2 id="0x05-dll劫持">0x05 DLL劫持</h2>
+<h3 id="51-劫持程序运行时加载未知dll">5.1 劫持程序运行时加载未知DLL</h3>
+<p>使用Process Monitor寻找可劫持dll</p>
+<ul>
+<li>寻找Result为Name Not Found</li>
+<li>DLL调用LoadLibrary函数</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184ojoy44j21dh0i4k1c.jpg" alt="Snipaste_2022-03-19_00-48-45"></p>
+<p>将黑DLL文件放入程序对应位置，该DLL文件在程序运行时成功劫持。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184on4enyj21az0u0gnp.jpg" alt="image-20220320001649400"></p>
+<h3 id="52-劫持程序某个功能的dll">5.2 劫持程序某个功能的DLL</h3>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184ooqvgej217g0k6ti9.jpg" alt="image-20220320224815265"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184oqrjibj21sg0u07gp.jpg" alt="image-20220320233728129"></p>
+<p>查看可劫持的DLL文件其到导出函数过多，可以使用AheadLib可以生成DLL劫持文件。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184oucwp7j20ng060750.jpg" alt="image-20220413102953174"></p>
+<p>VS新建DLL项目</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184owpn6ij21gk0hp11g.jpg" alt="image-20220413103033506"></p>
+<p>可针对DLL路径进行修改</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184oyk9doj20ob07zmyd.jpg" alt="image-20220413104713420"></p>
+<p>编译生成obj文件</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184p1cz2aj20ld05at95.jpg" alt="image-20220413103106991"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184p2saymj20qs09dq4i.jpg" alt="image-20220413103139239"></p>
+<p>将编译好的obj项目加入编译选项头中</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184p4n4jgj20qt0dognj.jpg" alt="image-20220413103223055"></p>
+<p>生成DLL后，将原DLL文件重命名为ssleay32_Old.dll</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184p7goroj20mq01o74h.jpg" alt="image-20220413103618670"></p>
+<p>替换后程序运行前会执行我们插入的代码</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184pa9ul4j2079063749.jpg" alt="image-20220413152714266"></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2022/031cc513f3.html" data-toggle="tooltip" data-placement="top" title="PE文件概述">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    <style>
+      span.toc-nav-number{
+        display: none
+      }
+    </style>
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#dll劫持之白加黑"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">DLL&#x52AB;&#x6301;&#x4E4B;&#x767D;&#x52A0;&#x9ED1;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-什么是dll文件"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">0x01 &#x4EC0;&#x4E48;&#x662F;DLL&#x6587;&#x4EF6;&#xFF1F;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-什么是dll劫持"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">0x02 &#x4EC0;&#x4E48;&#x662F;DLL&#x52AB;&#x6301;&#xFF1F;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#21-dll文件的加载顺序"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">2.1 DLL&#x6587;&#x4EF6;&#x7684;&#x52A0;&#x8F7D;&#x987A;&#x5E8F;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x03-什么是使用白加黑的方式进行dll劫持"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">0x03 &#x4EC0;&#x4E48;&#x662F;&#x4F7F;&#x7528;&#x767D;&#x52A0;&#x9ED1;&#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;DLL&#x52AB;&#x6301;&#xFF1F;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x04-编写dll文件"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">0x04 &#x7F16;&#x5199;DLL&#x6587;&#x4EF6;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x05-dll劫持"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">0x05 DLL&#x52AB;&#x6301;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#51-劫持程序运行时加载未知dll"><span class="toc-nav-number">1.5.1.</span> <span class="toc-nav-text">5.1 &#x52AB;&#x6301;&#x7A0B;&#x5E8F;&#x8FD0;&#x884C;&#x65F6;&#x52A0;&#x8F7D;&#x672A;&#x77E5;DLL</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#52-劫持程序某个功能的dll"><span class="toc-nav-number">1.5.2.</span> <span class="toc-nav-text">5.2 &#x52AB;&#x6301;&#x7A0B;&#x5E8F;&#x67D0;&#x4E2A;&#x529F;&#x80FD;&#x7684;DLL</span></a></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#免杀" title="免杀">免杀</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Katsec">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Kat 2022 
+                    <br>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.spanning-tree.xyz">Kat</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://spanning-tree.xyz/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'c3741abb2552c30afc11553990fa44bd';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://spanning-tree.xyz/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
