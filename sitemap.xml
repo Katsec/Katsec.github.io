@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://spanning-tree.xyz/about/index.html</loc>
+    
+    <lastmod>2022-04-29</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://spanning-tree.xyz/2022/0435fdbf19.html</loc>
     
     <lastmod>2022-04-29</lastmod>
@@ -61,13 +68,6 @@
     <loc>https://spanning-tree.xyz/2020/11d3b845db.html</loc>
     
     <lastmod>2020-11-20</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://spanning-tree.xyz/about/index.html</loc>
-    
-    <lastmod>2020-10-26</lastmod>
     
   </url>
   
