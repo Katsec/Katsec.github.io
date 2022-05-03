@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Kerberos协议 - Kat | Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://spanning-tree.xyz/2022/052d21762d.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#域渗透" title="域渗透">域渗透</a>
+                            
+                        </div>
+                        <h1>Kerberos协议</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Kat on
+                            2022-05-03
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kat</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="kerberos协议">Kerberos协议</h1>
+<blockquote>
+<p>熟悉域渗透的第一步其实就是针对Kerberos协议进行理解，理解Kerberos协议本身的缺点、安全问题。才能更好地在域环境中应用各种攻击手法。</p>
+</blockquote>
+<h2 id="0x01-kerberos协议概述">0x01 Kerberos协议概述</h2>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/1065370/1639399950999-e2e416f5-c8cf-4b97-b5e2-0b56c4749a39.png" alt="image.png"></p>
+<p>Kerberos是一种由MIT（麻省理工大学）提出的一种网络身份验证协议。它旨在通过使用密钥加密技术为客户端/服务器应用程序提供强身份验证。</p>
+<p><strong>Kerberos协议中主要是有三个角色的存在：</strong></p>
+<ol>
+<li>访问服务的Client（以下表述为Client 或者用户）</li>
+<li>提供服务的Server（以下表述为服务）</li>
+<li>KDC（Key Distribution Center）密钥分发中心 ，其中KDC服务默认会安装在一个域的域控中。在Kerberos中Client是否有权限访问Server端的服务由KDC发放的票据来决定。</li>
+</ol>
+<h2 id="0x02-认证流程">0x02 认证流程</h2>
+<blockquote>
+<p>为了方便理解我们将Kerberos协议整个认证过程抽象理解为某个人在动物园购买票进而参园的一个过程，而这个动物园相对来说比较高级仅对于认证的VIP用户开放。</p>
+</blockquote>
+<h3 id="第一阶段通信">第一阶段通信</h3>
+<p><strong>该阶段是客户端第一次访问KDC，此时KDC也不确定客户端的身份；所以第一次同通信的目的为了KDC认证客户端身份，确认客户端是一个可靠且拥有KDC权限的客户端。</strong></p>
+<p><strong>相当于检验是否为VIP客户，只有VIP客户才能买票。</strong><br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/1065370/1639400447700-fc913a41-40d1-43fe-9637-5300e78b6609.png" alt="image.png"><br>
+**① **AS_REQ：<br>
+Client向KDC发起AS_REQ请求，该次请求中携带了自己的用户名，主机IP，和当前时间戳；</p>
+<p>**② **AS_REP：<br>
+KDC中的AS（Authentication Server)服务接收请求后会去kerberos认证数据库中根据用户名查找是否存在该用户。<br>
+如果没有该用户名，认证失败，服务结束；如果存在该用户名，则AS认证中心便认为用户存在，此时便会返回响应给客户端，响应内容分为两部分。</p>
+<p><strong>第一部分：</strong><br>
+TGT票据，TGT票据含PAC，PAC含客户端sid<br>
+<strong>第二部分：</strong><br>
+session_key（CT_SK，用于下阶段客户端与TGS通信的key）、TGS的name、TGT的有效时间，这三个内容是使用客户端端的密钥进行加密。</p>
+<p><em>客户端的密钥不在网络中传输，防止假客户端认证。</em></p>
+<h3 id="第二阶段通信">第二阶段通信</h3>
+<p><strong>该阶段的目的为了获取访问对应服务的ticket，相当于开始购买动物园的门票。</strong><br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/1065370/1639404196596-0528b215-5fce-49fa-89ea-a1f159d67777.png" alt="image.png"><br>
+<strong>在客户端发送第二阶段的第一次请求之前：</strong><br>
+客户端会使用自身密钥解密第一阶段KDC返回的加密信息，其中查看返回的时间戳与第一阶段的第一次请求之间的时间差是否大于5分钟。<br>
+如果大于5分钟就会认定为伪造的请求，中止认证；否则开始发送第二阶段的第一次请求。</p>
+<p>**① **TGS_REQ：<br>
+该阶段客户端凭借TGT票据请求TGS获取ticket，其中请求内容含两部分。</p>
+<p><strong>第一部分：</strong><br>
+TGT票据、ServerIP（自己想访问的服务的IP），这两内容使用TGS密钥加密。<br>
+<strong>第二部分：</strong><br>
+client的name、client的ip、client的时间戳，这三个内容使用session_key（CT_SK）加密。</p>
+<p>**② **TGS_REP：<br>
+<strong>该阶段TGS收到来自客户端的请求：</strong><br>
+1、首先，根据发送过来的ServereIP去kerberos数据库中查询是否存在客户端想访问的服务；如果不存在，结束认证，否则继续认证。<br>
+2、TGS使用自己的密钥解密TGT内容，此时TGS可以查看到第一阶段客户端与AS之间的认证信息，session_key、时间戳。根据时间戳判断是否超时。<br>
+3、使用CK_SK解密第二部分内容（使用CT_SK加密的内容），取出解密信息与TGT信息是否一致，一致后进行下一步。<br>
+4、此时KDC将信息返回给客户端，响应内容包含俩部分。</p>
+<p><strong>第一部分：</strong><br>
+该字段是使用server的密码加密的ST即为ServerTicket，可理解为买到的票。<br>
+ServerTicket含有客户端的Name、IP、需要访问的网络服务的IP、ST有效时间、时间戳、用于客户端与Server之间通信的key（CS_SK，sessionkey）</p>
+<p><strong>第二部分：</strong><br>
+使用CT_SK加密的内容，其中包括CS_SK和时间戳，还有ST的有效时间。</p>
+<h3 id="第三阶段通信">第三阶段通信</h3>
+<p><strong>第二阶段已经获取的对应服务的许可票据，在第三阶段就要拿着服务许可票据进行访问资源。相当于买到了票，去动物园看演出</strong><br>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/1065370/1639406329517-c3b5356c-81f5-47a9-b3af-c91961fbdb21.png" alt="image.png"><br>
+① CS_REQ：<br>
+该阶段客户端使用CK_SK将自己的主机信息和时间戳进行加密作为交给服务端的第一部分内容，然后将ST（服务授予票据)作为第二部分内容都发送给服务端。</p>
+<p>**② **CS_REP：<br>
+服务器此时收到了来自客户端的请求，他会使用自己的密钥，即Server密钥将客户端第二部分内容进行解密，核对时间戳之后将其中的CS_SK取出，使用CS_SK将客户端发来的第一部分内容进行解密，从而获得经过TGS认证过后的客户端信息，此时他将这部分信息和客户端第二部分内容带来的自己的信息进行比对，最终确认该客户端就是经过了KDC认证的具有真实身份的客户端，是他可以提供服务的客户端。此时服务端返回一段使用CT_SK加密的表示接收请求的响应给客户端，在客户端收到请求之后，使用缓存在本地的CS_ST解密之后也确定了服务端的身份（其实服务端在通信的过程中还会使用数字证书证明自己身份）。</p>
+<h2 id="0x03-kerberos整体流程图">0x03 Kerberos整体流程图</h2>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/1065370/1639406657575-36300cd3-b2be-4a81-abf6-10bbbe7bee30.png" alt="image.png"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/1065370/1639406710827-7c55052a-6535-419e-9a13-acc07470c8b5.png" alt="image.png"></p>
+<p><strong>参考链接：</strong><br>
+<a href="https://seevae.github.io/2020/09/12/%E8%AF%A6%E8%A7%A3kerberos%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B/" target="_blank" rel="noopener">https://seevae.github.io/2020/09/12/%E8%AF%A6%E8%A7%A3kerberos%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B/</a><br>
+<a href="https://daiker.gitbook.io/windows-protocol/kerberos/1" target="_blank" rel="noopener">https://daiker.gitbook.io/windows-protocol/kerberos/1</a></p>
+<h2 id="0x04-kerberos安全问题">0x04 Kerberos安全问题</h2>
+<h3 id="第一阶段通信-as_reqampas_rep">第一阶段通信 AS_REQ&amp;AS_REP</h3>
+<h4 id="1-用户名枚举">1. 用户名枚举</h4>
+<p><strong>AS_REQ阶段</strong>发送请求中含有用户名，AS拿着用户名去Kerberos数据库中去查询是否存在该用户，成功则继续进行认证，失败则中止认证。</p>
+<p>所以因此特性就会存在用户名枚举的问题，在域外可以利用该漏洞枚举域用户，在域内则可以使用LDAP进行查询。</p>
+<h4 id="2-黄金票据">2. 黄金票据</h4>
+<p>**AS_REP阶段，**如果AS在Kerberos数据库中查询存在该用户，则会使用krbtgt hash加密的TGT票据，TGT票据内含有PAC,PAC包含用户的sid，用户所在的组。</p>
+<p>如果我们拥有krbtgt的hash就可以给我们自己签发任意用户的TGT票据，这个票据也被称为黄金票据。</p>
+<h4 id="3-password-spraying">3. Password Spraying</h4>
+<p>在 Kerberos 协议认证的 AS-REQ 阶段，cname 的值是用户名。当用户不存在时，返回包提示错误。当用户名存在，密码正确和密码错误时，AS-REP 的返回包不一样。所以可以利用这点，对域内进行域用户枚举和密码喷洒攻击。</p>
+<h4 id="4-pass-the-hash">4. pass the hash</h4>
+<p>就是由于在进行认证的时候，是用用户hash加密时间戳，即使在使用密码进行登录的情况下，也是先把密码加密成hash，再进行认证。因此在只有用户hash，没有明文密码的情况下也是可以进行认证的。</p>
+<h4 id="5-as-reproasting">5. AS-REPRoasting</h4>
+<p>对于域用户，如果设置了选项”不要求Kerberos预身份认证”，</p>
+<p>当关闭了预身份验证后，攻击者可以使用指定用户去请求票据，此时域控不会作任何验证就将 TGT 票据 和 该用户 Hash 加密的 Session Key 返回。</p>
+<p>因此，攻击者就可以对获取到的 用户 Hash 加密的 Session Key 进行离线破解，如果破解成功，就能得到该指定用户的密码明文。（但是Kerberos预身份认证默认是关闭的）</p>
+<h3 id="第二阶段通信tgs_reqamptgs_rep">第二阶段通信TGS_REQ&amp;TGS_REP</h3>
+<h4 id="1-白银票据">1. 白银票据</h4>
+<p>在第一阶段通信AS_REP后客户端获取了TGT票据，在获取TGT票据之后客户端再次请求向TGS请求获取TGS票据。这个返回的票据是使用服务的hash进行加密的，如果我们获取了服务的哈希就可以给我们自己签发任意用户的TGS票据。</p>
+<p>注意：使用服务的哈希伪造的TGS票据（白银票据）是没有KDC PAC签名的，如果目标主机配置为验证KDC PAC签名则白银票据不起作用。</p>
+<h4 id="2-kerberosting">2. Kerberosting</h4>
+<p>在TGS_REP阶段只要TGT正确，不管是否有权限均会返回ST票据，返回的ST票据是使用服务的hash进行加密的，我们可以对ST票据的哈希进行爆破。</p>
+<p>这里的服务只得是SPN，SPN可以分成俩种一种是注册在机器用户下，一种是注册在域用户下。注册在机器用户的下SPN是120位随机Unicode组成，几乎不可破解，所以在实际运用中我们先找到注册在域账户下的SPN服务，并申请对应的ST进行破解。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2022/0435fdbf19.html" data-toggle="tooltip" data-placement="top" title="记一次有趣的溯源">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    <style>
+      span.toc-nav-number{
+        display: none
+      }
+    </style>
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#kerberos协议"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Kerberos&#x534F;&#x8BAE;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-kerberos协议概述"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">0x01 Kerberos&#x534F;&#x8BAE;&#x6982;&#x8FF0;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-认证流程"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">0x02 &#x8BA4;&#x8BC1;&#x6D41;&#x7A0B;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#第一阶段通信"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x901A;&#x4FE1;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#第二阶段通信"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">&#x7B2C;&#x4E8C;&#x9636;&#x6BB5;&#x901A;&#x4FE1;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#第三阶段通信"><span class="toc-nav-number">1.2.3.</span> <span class="toc-nav-text">&#x7B2C;&#x4E09;&#x9636;&#x6BB5;&#x901A;&#x4FE1;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x03-kerberos整体流程图"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">0x03 Kerberos&#x6574;&#x4F53;&#x6D41;&#x7A0B;&#x56FE;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x04-kerberos安全问题"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">0x04 Kerberos&#x5B89;&#x5168;&#x95EE;&#x9898;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#第一阶段通信-as_reqampas_rep"><span class="toc-nav-number">1.4.1.</span> <span class="toc-nav-text">&#x7B2C;&#x4E00;&#x9636;&#x6BB5;&#x901A;&#x4FE1; AS_REQ&amp;AS_REP</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-用户名枚举"><span class="toc-nav-number">1.4.1.1.</span> <span class="toc-nav-text">1. &#x7528;&#x6237;&#x540D;&#x679A;&#x4E3E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-黄金票据"><span class="toc-nav-number">1.4.1.2.</span> <span class="toc-nav-text">2. &#x9EC4;&#x91D1;&#x7968;&#x636E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3-password-spraying"><span class="toc-nav-number">1.4.1.3.</span> <span class="toc-nav-text">3. Password Spraying</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-pass-the-hash"><span class="toc-nav-number">1.4.1.4.</span> <span class="toc-nav-text">4. pass the hash</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#5-as-reproasting"><span class="toc-nav-number">1.4.1.5.</span> <span class="toc-nav-text">5. AS-REPRoasting</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#第二阶段通信tgs_reqamptgs_rep"><span class="toc-nav-number">1.4.2.</span> <span class="toc-nav-text">&#x7B2C;&#x4E8C;&#x9636;&#x6BB5;&#x901A;&#x4FE1;TGS_REQ&amp;TGS_REP</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-白银票据"><span class="toc-nav-number">1.4.2.1.</span> <span class="toc-nav-text">1. &#x767D;&#x94F6;&#x7968;&#x636E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-kerberosting"><span class="toc-nav-number">1.4.2.2.</span> <span class="toc-nav-text">2. Kerberosting</span></a></li></ol></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#域渗透" title="域渗透">域渗透</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Katsec">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Kat 2022 
+                    <br>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.spanning-tree.xyz">Kat</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://spanning-tree.xyz/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'c3741abb2552c30afc11553990fa44bd';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://spanning-tree.xyz/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
