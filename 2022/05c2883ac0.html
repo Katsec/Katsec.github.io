@@ -225,7 +225,7 @@
 <p>该阶段的攻击可在域外或域内，只要我们能够访问域控制器的88端口（Kerberos服务）即可。</p>
 <h3 id="攻击方法">攻击方法</h3>
 <h4 id="kerbrute">kerbrute</h4>
-<p><code>[https://github.com/ropnop/kerbrute/release](https://github.com/ropnop/kerbrute/release)</code><br>
+<p><code>https://github.com/ropnop/kerbrute/release</code><br>
 枚举用户</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">域外</span><br><span class="line">kerbrute_windows_amd64.exe userenum --dc <span class="number">192.168</span><span class="number">.40</span><span class="number">.132</span> -d spanning-tree user.txt</span><br><span class="line"></span><br><span class="line">域内(在域内可不指定dc ip)</span><br><span class="line">kerbrute_windows_amd64.exe userenum -d spanning-tree.org user.txt</span><br></pre></td></tr></table></figure>
 <p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h2aa95vgz7j20qo09d0vd.jpg" alt="image.png"><br>
@@ -236,7 +236,7 @@
 <p>TIPS：在域外进行密码喷洒的时候域控时间和外部时间不一致，或者时差相差太多会导致无法喷洒成功。这种情况是因为Kerberos在多数认证过程中都会校验时间，如果相差太多就直接终止认证。</p>
 <h4 id="pykerbrute">pykerbrute</h4>
 <p><strong>枚举用户</strong><br>
-<code>[https://github.com/3gstudent/pyKerbrute](https://github.com/3gstudent/pyKerbrute)</code></p>
+<code>https://github.com/3gstudent/pyKerbrute</code></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EnumADUser.py <span class="number">192.168</span><span class="number">.40</span><span class="number">.132</span> spanning-tree.org user.txt tcp</span><br></pre></td></tr></table></figure>
 <p><strong>pykerbrute 密码喷洒</strong><br>
 该工具可以针对mtlnhash进行密码喷洒</p>
