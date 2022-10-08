@@ -218,7 +218,7 @@
                 <h2 id="redis主从复制getshell">redis主从复制getshell</h2>
 <p>redis常见的攻击方式有未授权写入webshell、写入计划任务反弹shell、写入ssh公钥。</p>
 <h4 id="1-主从复制介绍">1、主从复制介绍</h4>
-<p>Redis提供**主从模式：**使用一个redis实例作为主机，其他实例都作为备份机，其中主机和从机数据相同，而从机只负责读，主机只负责写，通过读写分离可以大幅度减轻流量的压力，算是一种通过牺牲空间来换取效率的缓解方式。</p>
+<p>Redis提供主从模式：使用一个redis实例作为主机，其他实例都作为备份机，其中主机和从机数据相同，而从机只负责读，主机只负责写，通过读写分离可以大幅度减轻流量的压力，算是一种通过牺牲空间来换取效率的缓解方式。</p>
 <h4 id="2-影响版本">2、影响版本</h4>
 <p>4.x-6.0.5</p>
 <p>在Reids 4.x之后，Redis新增了模块功能，通过外部拓展，可以实现在Redis中实现一个新的Redis命令，通过写C语言编译并加载恶意的.so文件，达到代码执行的目的。在6.0.5版本之后修复了此问题。</p>
@@ -230,7 +230,6 @@
 <img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gleg4jo4pkj311w0awacl.jpg" alt="image-20201206211526358"></p>
 <p>取消密码认证</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gleg402dfrj30xs09ggoy.jpg" alt="image-20201206211452502"></p>
-<h4 id=""></h4>
 <p>重新运行redis</p>
 <p>redis-server redis.conf（源码安装需要指定配置文件进行启动）</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gleg8x0z80j30y80u07f8.jpg" alt="image-20201206211934930"></p>
@@ -319,7 +318,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#redis主从复制getshell"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">redis&#x4E3B;&#x4ECE;&#x590D;&#x5236;getshell</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-主从复制介绍"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">1&#x3001;&#x4E3B;&#x4ECE;&#x590D;&#x5236;&#x4ECB;&#x7ECD;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-影响版本"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">2&#x3001;&#x5F71;&#x54CD;&#x7248;&#x672C;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3-环境搭建"><span class="toc-nav-number">1.0.3.</span> <span class="toc-nav-text">3&#x3001;&#x73AF;&#x5883;&#x642D;&#x5EFA;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#"><span class="toc-nav-number">1.0.4.</span> <span class="toc-nav-text"></span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-漏洞利用"><span class="toc-nav-number">1.0.5.</span> <span class="toc-nav-text">4&#x3001;&#x6F0F;&#x6D1E;&#x5229;&#x7528;</span></a></li></ol></li></ol></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#redis主从复制getshell"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">redis&#x4E3B;&#x4ECE;&#x590D;&#x5236;getshell</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-主从复制介绍"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">1&#x3001;&#x4E3B;&#x4ECE;&#x590D;&#x5236;&#x4ECB;&#x7ECD;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-影响版本"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">2&#x3001;&#x5F71;&#x54CD;&#x7248;&#x672C;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3-环境搭建"><span class="toc-nav-number">1.0.3.</span> <span class="toc-nav-text">3&#x3001;&#x73AF;&#x5883;&#x642D;&#x5EFA;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-漏洞利用"><span class="toc-nav-number">1.0.4.</span> <span class="toc-nav-text">4&#x3001;&#x6F0F;&#x6D1E;&#x5229;&#x7528;</span></a></li></ol></li></ol></li></ol>
         
         </div>
       </aside>
