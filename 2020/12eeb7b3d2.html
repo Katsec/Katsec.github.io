@@ -216,9 +216,9 @@
                 post-container">
 
                 <h2 id="redis主从复制getshell">redis主从复制getshell</h2>
+<p>redis常见的攻击方式有未授权写入webshell、写入计划任务反弹shell、写入ssh公钥。</p>
 <h4 id="1-主从复制介绍">1、主从复制介绍</h4>
-<p>和Mysql主从复制的原因一样，Redis虽然读取写入的速度都特别快，但是也会产生读压力特别大的情况。</p>
-<p>为了分担读压力，Redis支持主从复制，Redis的主从结构可以采用一主多从或者级联结构，Redis主从复制可以根据是否是全量分为全量同步和增量同步。</p>
+<p>Redis提供**主从模式：**使用一个redis实例作为主机，其他实例都作为备份机，其中主机和从机数据相同，而从机只负责读，主机只负责写，通过读写分离可以大幅度减轻流量的压力，算是一种通过牺牲空间来换取效率的缓解方式。</p>
 <h4 id="2-影响版本">2、影响版本</h4>
 <p>4.x-6.0.5</p>
 <p>在Reids 4.x之后，Redis新增了模块功能，通过外部拓展，可以实现在Redis中实现一个新的Redis命令，通过写C语言编译并加载恶意的.so文件，达到代码执行的目的。在6.0.5版本之后修复了此问题。</p>
@@ -235,7 +235,8 @@
 <p>redis-server redis.conf（源码安装需要指定配置文件进行启动）</p>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gleg8x0z80j30y80u07f8.jpg" alt="image-20201206211934930"></p>
 <h4 id="4-漏洞利用">4、漏洞利用</h4>
-<p>通过redis主从复制加载外部.so文件，变成redis功能中的一部分，从而实现功能扩展。</p>
+<p>利用条件：需要redis未授权或者弱口令</p>
+<p>通过python脚本模拟redis服务端，利用主从复制加载外部.so文件，变成redis功能中的一部分，从而实现功能扩展。</p>
 <p>我们编译恶意的.so文件，同步至redis上进而实现恶意代码的功能。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">下载外部so文件</span><br><span class="line">git clone https://github.com/n0b0dyCN/RedisModules-ExecuteCommand</span><br><span class="line">编译</span><br><span class="line">make（使用MAC系统编译可能无法在src目录下生成so文件）</span><br></pre></td></tr></table></figure>
 <p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glegtkso4uj30zu0iwajl.jpg" alt="image-20201206213929485"></p>
