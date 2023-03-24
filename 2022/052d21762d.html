@@ -220,7 +220,7 @@
 <p>熟悉域渗透的第一步其实就是针对Kerberos协议进行理解，理解Kerberos协议本身的缺点、安全问题。才能更好地在域环境中应用各种攻击手法。</p>
 </blockquote>
 <h2 id="0x01-kerberos协议概述">0x01 Kerberos协议概述</h2>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h1v8j1o1q9j20f50axq3i.jpg" alt="image.png"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h1v8j1o1q9j20f50axq3i.jpg" alt="image.png"></p>
 <p>Kerberos是一种由MIT（麻省理工大学）提出的一种网络身份验证协议。它旨在通过使用密钥加密技术为客户端/服务器应用程序提供强身份验证。</p>
 <p><strong>Kerberos协议中主要是有三个角色的存在：</strong></p>
 <ol>
@@ -235,7 +235,7 @@
 <h3 id="第一阶段通信">第一阶段通信</h3>
 <p><strong>该阶段是客户端第一次访问KDC，此时KDC也不确定客户端的身份；所以第一次同通信的目的为了KDC认证客户端身份，确认客户端是一个可靠且拥有KDC权限的客户端。</strong></p>
 <p><strong>相当于检验是否为VIP客户，只有VIP客户才能买票。</strong><br>
-<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h1v8j6xlshj20zy0lctai.jpg" alt="image.png"><br>
+<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h1v8j6xlshj20zy0lctai.jpg" alt="image.png"><br>
 **① **AS_REQ：<br>
 Client向KDC发起AS_REQ请求，该次请求中携带了自己的用户名，主机IP，和当前时间戳；</p>
 <p>**② **AS_REP：<br>
@@ -248,7 +248,7 @@ session_key（CT_SK，用于下阶段客户端与TGS通信的key）、TGS的name
 <p><em>客户端的密钥不在网络中传输，防止假客户端认证。</em></p>
 <h3 id="第二阶段通信">第二阶段通信</h3>
 <p><strong>该阶段的目的为了获取访问对应服务的ticket，相当于开始购买动物园的门票。</strong><br>
-<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h1v8jczf2jj211d0lo40k.jpg" alt="image.png"><br>
+<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h1v8jczf2jj211d0lo40k.jpg" alt="image.png"><br>
 <strong>在客户端发送第二阶段的第一次请求之前：</strong><br>
 客户端会使用自身密钥解密第一阶段KDC返回的加密信息，其中查看返回的时间戳与第一阶段的第一次请求之间的时间差是否大于5分钟。<br>
 如果大于5分钟就会认定为伪造的请求，中止认证；否则开始发送第二阶段的第一次请求。</p>
@@ -271,14 +271,14 @@ ServerTicket含有客户端的Name、IP、需要访问的网络服务的IP、ST�
 使用CT_SK加密的内容，其中包括CS_SK和时间戳，还有ST的有效时间。</p>
 <h3 id="第三阶段通信">第三阶段通信</h3>
 <p><strong>第二阶段已经获取的对应服务的许可票据，在第三阶段就要拿着服务许可票据进行访问资源。相当于买到了票，去动物园看演出</strong><br>
-<img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h1v8jimt9qj20wv0hxgn5.jpg" alt="image.png"><br>
+<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h1v8jimt9qj20wv0hxgn5.jpg" alt="image.png"><br>
 ① CS_REQ：<br>
 该阶段客户端使用CK_SK将自己的主机信息和时间戳进行加密作为交给服务端的第一部分内容，然后将ST（服务授予票据)作为第二部分内容都发送给服务端。</p>
 <p>**② **CS_REP：<br>
 服务器此时收到了来自客户端的请求，他会使用自己的密钥，即Server密钥将客户端第二部分内容进行解密，核对时间戳之后将其中的CS_SK取出，使用CS_SK将客户端发来的第一部分内容进行解密，从而获得经过TGS认证过后的客户端信息，此时他将这部分信息和客户端第二部分内容带来的自己的信息进行比对，最终确认该客户端就是经过了KDC认证的具有真实身份的客户端，是他可以提供服务的客户端。此时服务端返回一段使用CT_SK加密的表示接收请求的响应给客户端，在客户端收到请求之后，使用缓存在本地的CS_ST解密之后也确定了服务端的身份（其实服务端在通信的过程中还会使用数字证书证明自己身份）。</p>
 <h2 id="0x03-kerberos整体流程图">0x03 Kerberos整体流程图</h2>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h1v8jlgha0j20n80m4jsl.jpg" alt="image.png"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h1v8joorl7j210o0jcgo0.jpg" alt="image.png"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h1v8jlgha0j20n80m4jsl.jpg" alt="image.png"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h1v8joorl7j210o0jcgo0.jpg" alt="image.png"></p>
 <p><strong>参考链接：</strong><br>
 <a href="https://seevae.github.io/2020/09/12/%E8%AF%A6%E8%A7%A3kerberos%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B/" target="_blank" rel="noopener">https://seevae.github.io/2020/09/12/%E8%AF%A6%E8%A7%A3kerberos%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B/</a><br>
 <a href="https://daiker.gitbook.io/windows-protocol/kerberos/1" target="_blank" rel="noopener">https://daiker.gitbook.io/windows-protocol/kerberos/1</a></p>
@@ -498,7 +498,7 @@ ServerTicket含有客户端的Name、IP、需要访问的网络服务的IP、ST�
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2022 
+                    Copyright &copy; Kat 2023 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>

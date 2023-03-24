@@ -258,7 +258,7 @@
 <p>原理：通过ADSI(ActiveDirectoryServicesInterface)（活动目录服务接口）尝试进行LDAP查询，获得结果</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-DomainPasswordSpray -UserList .\users.txt -Password DomainUser123! -Verbose</span><br></pre></td></tr></table></figure>
 <p>输出结果如下图</p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gpg7yyzn8dj30zy06s3zb.jpg" alt="image-20210410172532275"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008eGmZEgy1gpg7yyzn8dj30zy06s3zb.jpg" alt="image-20210410172532275"></p>
 <p>DomainPasswordSpray支持筛选用户的功能，获得所有用户的列表，排除被禁用和被锁定的用户</p>
 <p>命令如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Get-DomainUserList -RemoveDisabled -RemovePotentialLockouts</span><br></pre></td></tr></table></figure>
@@ -269,7 +269,7 @@
 <p>test.txt保存所有用户名，如果口令正确，输出查询结果的个数，如果口令错误，返回验证错误：<code>ldap_bind: Invalid credentials (49)</code></p>
 <p>域外使用Invoke-DomainPasswordSprayOutsideTheDomain暴力破解域用户口令</p>
 <p><a href="https://github.com/3gstudent/Homework-of-Powershell/blob/master/Invoke-DomainPasswordSprayOutsideTheDomain.ps1" target="_blank" rel="noopener">https://github.com/3gstudent/Homework-of-Powershell/blob/master/Invoke-DomainPasswordSprayOutsideTheDomain.ps1</a></p>
-<p>​<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-DomainPasswordSprayOutsideTheDomain -Domain "192.168.1.1/DC=test,DC=com" -UserList .\user.txt -Password DomainUser123! -Verbose</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-DomainPasswordSprayOutsideTheDomain -Domain "192.168.1.1/DC=test,DC=com" -UserList .\user.txt -Password DomainUser123! -Verbose</span><br></pre></td></tr></table></figure>
 <p>参考链接：<a href="https://3gstudent.github.io/%E6%B8%97%E9%80%8F%E5%9F%BA%E7%A1%80-%E9%80%9A%E8%BF%87LDAP%E5%8D%8F%E8%AE%AE%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3%E5%9F%9F%E7%94%A8%E6%88%B7%E7%9A%84%E5%8F%A3%E4%BB%A4" target="_blank" rel="noopener">https://3gstudent.github.io/渗透基础-通过LDAP协议暴力破解域用户的口令</a></p>
 
                 
@@ -464,7 +464,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2022 
+                    Copyright &copy; Kat 2023 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>

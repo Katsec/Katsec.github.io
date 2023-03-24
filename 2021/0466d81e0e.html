@@ -219,7 +219,7 @@
 <p>在windows认证体系中主要有俩种认证体系，一个是NTLM认证体系一个是Kerberos认证体系。</p>
 <p>其中NTLM协议是一种嵌入式协议，它可以嵌入到其他协议中，比如：http、smb等。我们可以通过学习NTLM协议进而了解内网渗透中的一些安全问题。</p>
 <h2 id="1-ntlm认证流程">1. NTLM认证流程</h2>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gx7jczoh1vj30pv071gmr.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gx7jczoh1vj30pv071gmr.jpg" alt="img"></p>
 <h3 id="11type1协商">1.1（type1）协商</h3>
 <p>其中type1阶段，客户端向服务器发送协商请求；主要包含客户端支持的功能和请求服务端的功能列表</p>
 <h3 id="12type2质询">1.2（type2）质询</h3>
@@ -237,13 +237,13 @@
 <h2 id="2-ntlm认证的安全问题">2. NTLM认证的安全问题</h2>
 <h3 id="21-信息收集">2.1 信息收集</h3>
 <p>在type2质询阶段，服务器会返回自身的一些敏感信息，如图：</p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gx7jd486cwj30jy0a6t9q.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gx7jd486cwj30jy0a6t9q.jpg" alt="img"></p>
 <p>通常我们可以利用NTLM协议type2质询阶段的特性进行内网信息收集。</p>
 <h3 id="22-pth">2.2 PTH</h3>
 <p>由于在type3阶段，客户端给服务器返回response时，是使用hash与challenge计算的，所以攻击者只要获取了用户的hash就可以进行ntlm认证。</p>
 <p>所以因此产生了pass the hash的安全问题，针对该问题微软针对PTH做了安全补丁，即kb2871997（导致攻击者在远程认证过程中虽然是administrators组权限但是token是不完整的）</p>
 <h3 id="33-ntlm-relay">3.3 NTLM relay</h3>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gx7jd8k2ufj30yy0mqdj8.jpg" alt="img"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gx7jd8k2ufj30yy0mqdj8.jpg" alt="img"></p>
 <p>如图，InventoryServer对Target进行NTLM认证的时候，Attacker就会针对当前网络进行NTLM投毒。导致InventoryServer误认为Attacker就是Target机器，由此Attacker就可以relay到Target服务器上，获取Target服务器权限。</p>
 <h3 id="34-ntlm投毒">3.4 NTLM投毒</h3>
 <p>在NTLM协议认证的过程中，如果有攻击者对NTLM协议进行投毒。攻击者就可以扮演被认证的服务器，导致攻击者分配给客户Challenge进而又收到了来自客户端的Net- NTLM哈希。</p>
@@ -441,7 +441,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2022 
+                    Copyright &copy; Kat 2023 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>

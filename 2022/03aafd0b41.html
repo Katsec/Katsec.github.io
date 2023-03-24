@@ -239,22 +239,22 @@
 <p>实际上微软为了更进一步的防御系统的DLL被劫持，将一些容易被劫持的系统DLL写进了一个注册表项中，那么凡是此项下的DLL文件就会被禁止从EXE自身所在的目录下调用，而只能从系统目录即SYSTEM32目录下调用。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\KnownDLLs</span><br></pre></td></tr></table></figure>
 <p>键值如下：</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184nufgzbj20th0oednc.jpg" alt="image-20220318223827685"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184nufgzbj20th0oednc.jpg" alt="image-20220318223827685"></p>
 <p>直到Windows 7后DLL的加载顺序如图：</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184nurpa6j20co081t9m.jpg" alt="image-20220318224012988"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184nurpa6j20co081t9m.jpg" alt="image-20220318224012988"></p>
 <p>但是如果开发者滥用DLL目录，所调用的DLL文件不在KnownDLLs目录中且攻击者可控Application’s directory与PATH环境中列出的目录依然能够导致DLL劫持的问题。</p>
 <h2 id="0x03-什么是使用白加黑的方式进行dll劫持">0x03 什么是使用白加黑的方式进行DLL劫持？</h2>
 <p>白针对杀软而言是指带有数字签名的正常exe文件，那么黑就是指带有恶意代码的DLL文件。</p>
 <p>病毒借助那些带数字签名且在杀毒软件白名单内的exe程序去加载带有恶意代码的dll，便能获得杀毒软件主动防御的自动信任，从而成功加载到系统中。</p>
 <h2 id="0x04-编写dll文件">0x04 编写DLL文件</h2>
 <p>使用VS2019创建项目</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184nwp4uoj219m0u0tbt.jpg" alt="image-20220320002219908"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184o0wswaj219s0u00v0.jpg" alt="image-20220320002318737"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184nwp4uoj219m0u0tbt.jpg" alt="image-20220320002219908"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184o0wswaj219s0u00v0.jpg" alt="image-20220320002318737"></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// pch.cpp: 与预编译标头对应的源文件</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pch.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 当使用预编译的头时，需要使用此源文件，编译才能成功。</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dllmain.cpp : 定义 DLL 应用程序的入口点。</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"pch.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">BOOL APIENTRY <span class="title">DllMain</span><span class="params">( HMODULE hModule,</span></span></span><br><span class="line"><span class="function"><span class="params">                       DWORD  ul_reason_for_call,</span></span></span><br><span class="line"><span class="function"><span class="params">                       LPVOID lpReserved</span></span></span><br><span class="line"><span class="function"><span class="params">                     )</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (ul_reason_for_call)</span><br><span class="line">    &#123;</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_ATTACH:</span><br><span class="line">        WinExec(<span class="string">"calc.exe"</span>, SW_HIDE);</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_ATTACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_THREAD_DETACH:</span><br><span class="line">    <span class="keyword">case</span> DLL_PROCESS_DETACH:</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>生成dll文件</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184odt67lj21is0u044j.jpg" alt="image-20220320003311812"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184of2obsj215r0u0ack.jpg" alt="image-20220320000815375"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184odt67lj21is0u044j.jpg" alt="image-20220320003311812"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184of2obsj215r0u0ack.jpg" alt="image-20220320000815375"></p>
 <h2 id="0x05-dll劫持">0x05 DLL劫持</h2>
 <h3 id="51-劫持程序运行时加载未知dll">5.1 劫持程序运行时加载未知DLL</h3>
 <p>使用Process Monitor寻找可劫持dll</p>
@@ -262,27 +262,27 @@
 <li>寻找Result为Name Not Found</li>
 <li>DLL调用LoadLibrary函数</li>
 </ul>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184ojoy44j21dh0i4k1c.jpg" alt="Snipaste_2022-03-19_00-48-45"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184ojoy44j21dh0i4k1c.jpg" alt="Snipaste_2022-03-19_00-48-45"></p>
 <p>将黑DLL文件放入程序对应位置，该DLL文件在程序运行时成功劫持。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184on4enyj21az0u0gnp.jpg" alt="image-20220320001649400"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184on4enyj21az0u0gnp.jpg" alt="image-20220320001649400"></p>
 <h3 id="52-劫持程序某个功能的dll">5.2 劫持程序某个功能的DLL</h3>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184ooqvgej217g0k6ti9.jpg" alt="image-20220320224815265"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184oqrjibj21sg0u07gp.jpg" alt="image-20220320233728129"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184ooqvgej217g0k6ti9.jpg" alt="image-20220320224815265"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184oqrjibj21sg0u07gp.jpg" alt="image-20220320233728129"></p>
 <p>查看可劫持的DLL文件其到导出函数过多，可以使用AheadLib可以生成DLL劫持文件。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184oucwp7j20ng060750.jpg" alt="image-20220413102953174"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184oucwp7j20ng060750.jpg" alt="image-20220413102953174"></p>
 <p>VS新建DLL项目</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184owpn6ij21gk0hp11g.jpg" alt="image-20220413103033506"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184owpn6ij21gk0hp11g.jpg" alt="image-20220413103033506"></p>
 <p>可针对DLL路径进行修改</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184oyk9doj20ob07zmyd.jpg" alt="image-20220413104713420"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184oyk9doj20ob07zmyd.jpg" alt="image-20220413104713420"></p>
 <p>编译生成obj文件</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184p1cz2aj20ld05at95.jpg" alt="image-20220413103106991"></p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184p2saymj20qs09dq4i.jpg" alt="image-20220413103139239"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184p1cz2aj20ld05at95.jpg" alt="image-20220413103106991"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184p2saymj20qs09dq4i.jpg" alt="image-20220413103139239"></p>
 <p>将编译好的obj项目加入编译选项头中</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184p4n4jgj20qt0dognj.jpg" alt="image-20220413103223055"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184p4n4jgj20qt0dognj.jpg" alt="image-20220413103223055"></p>
 <p>生成DLL后，将原DLL文件重命名为ssleay32_Old.dll</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184p7goroj20mq01o74h.jpg" alt="image-20220413103618670"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184p7goroj20mq01o74h.jpg" alt="image-20220413103618670"></p>
 <p>替换后程序运行前会执行我们插入的代码</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1h184pa9ul4j2079063749.jpg" alt="image-20220413152714266"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h184pa9ul4j2079063749.jpg" alt="image-20220413152714266"></p>
 
                 
 
@@ -476,7 +476,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2022 
+                    Copyright &copy; Kat 2023 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>

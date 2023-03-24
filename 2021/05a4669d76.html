@@ -232,13 +232,13 @@
 <li>首先查看系统和PAM版本</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看rpm版本</span><br><span class="line">rpm -qa | grep pam</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 查看系统位数</span><br><span class="line">getconf LONG_BIT</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8yramakj30u4046gm9.jpg" alt="image-20210512153130455"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gqj8yramakj30u4046gm9.jpg" alt="image-20210512153130455"></p>
 <ol start="2">
 <li>下载对应源码</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">地址：http://www.linux-pam.org/library/</span><br><span class="line"><span class="meta">#</span> 解压</span><br><span class="line">tar -xzvf Linux-PAM-1.1.8.tar.gz</span><br><span class="line">cd Linux-PAM-1.1.8/modules/pam_unix/</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 编辑配置文件</span><br><span class="line">vim pam_unix_auth.c</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8yw17n0j31mc07sgnt.jpg" alt="image-20210513091556244"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8yyb7m6j31se06wmz8.jpg" alt="image-20210513092046992"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gqj8yw17n0j31mc07sgnt.jpg" alt="image-20210513091556244"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gqj8yyb7m6j31se06wmz8.jpg" alt="image-20210513092046992"></p>
 <ol start="3">
 <li>编写后门特定密码的后门认证且记录认证密码</li>
 </ol>
@@ -253,21 +253,21 @@
 <li>备份、替换原文件</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/lib64/security/pam_unix.so /tmp/pam_unix.so.bak</span><br><span class="line">cp /root/tmp/Linux-PAM-1.1.8/modules/pam_unix/.libs/pam_unix.so /usr/lib64/security/pam_unix.so</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8z3vytaj31tm06ggnq.jpg" alt="image-20210514101934669"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gqj8z3vytaj31tm06ggnq.jpg" alt="image-20210514101934669"></p>
 <ol start="6">
 <li>测试，使用修改密码成功登录</li>
 </ol>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8zmniwkj30ue08g75q.jpg" alt="image-20210514102231767"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gqj8zmniwkj30ue08g75q.jpg" alt="image-20210514102231767"></p>
 <p>重新替换为原文件后已无法使用kat密码进行登录</p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8z757kvj317w0503zi.jpg" alt="image-20210514104312789"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8zstbloj30qq088djc.jpg" alt="image-20210514104300915"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gqj8z757kvj317w0503zi.jpg" alt="image-20210514104312789"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gqj8zstbloj30qq088djc.jpg" alt="image-20210514104300915"></p>
 <p>至此Linux- PAM后门能够达到权限维持与账号密码获取的功能，方便后续进一步进行横向利用。</p>
 <h2 id="3-tips">3. TIPS</h2>
 <ol>
 <li>在种植PAM后门的过程中Centos需要关闭selinux</li>
 </ol>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 临时关闭</span><br><span class="line">setenforce 0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 永久关闭，将其中SElinunx设置为disable</span><br><span class="line">/etc/selinux/config</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gqj8zzsxizj30s606swfp.jpg" alt="image-20210513095224244"></p>
+<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/008i3skNgy1gqj8zzsxizj30s606swfp.jpg" alt="image-20210513095224244"></p>
 <ol start="2">
 <li>
 <p>替换文件注意修改时间戳以及PAM认证的一些时间戳达到隐蔽。</p>
@@ -472,7 +472,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Kat 2022 
+                    Copyright &copy; Kat 2023 
                     <br>
                     <span style="display: inline-block; margin: 0 5px;">
                         <i class="fa fa-heart"></i>
